@@ -1,6 +1,11 @@
 from flask import Flask, request, Response
 app = Flask(__name__)
 
+# Todo:
+# - Add configuration for database, collection, and feature toggles
+# - Add unittest
+# - Refactor to abstract the data access
+
 class Mongo(object):
     def __init__(self):
         from pymongo import MongoClient
