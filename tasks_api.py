@@ -16,6 +16,9 @@ def connect_db():
         connection_uri=app.config['ENVIRONMENT']['mongodb_connection_uri'],
         database_name=app.config['ENVIRONMENT']['mongodb_database_name'])
 
+def clear_db():
+    mongo.clear()
+
 @app.route('/')
 def home():
     import json
