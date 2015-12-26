@@ -1,5 +1,12 @@
 import tasks_api
-tasks_api.app.config.from_pyfile('test_config.py')
+
+class ProductionConfig(object):
+    ENVIRONMENT = {
+        'mongodb_connection_uri' : 'mongodb://localhost:27017/',
+        'mongodb_database_name' : 'prod'
+    }
+
+tasks_api.app.config.from_object(ProductionConfig)
 tasks_api.connect_db()
 tasks_api.app.run()
 

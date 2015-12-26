@@ -5,6 +5,7 @@ app = Flask(__name__)
 # - Refactor to abstract the data access, and the models
 
 import json
+import model
 
 mongo = {}
 
@@ -30,13 +31,13 @@ def get_tasks():
         filter['assignee'] = request.args['assignee']
     if 'done' in request.args.keys():
         filter['done'] = ast.literal_eval(request.args['done'])
-    tasks = [x for x in mongo.collection.find(filter)]
-    return Response(json.dumps(tasks),mimetype='application/json');
+    tasks = mongo.get_tasks_by_filter(filter)
+    return Response(model.array_to_json(tasks),mimetype='application/json');
 
 @app.route('/tasks/<task_id>',methods=['GET'])
 def get_task(task_id):
-    task = mongo.collection.find_one(filter = {'_id':task_id})
-    return Response(json.dumps(task),mimetype='application/json');
+    task = mongo.get_task_by_id(task_id)
+    return Response(model.obj_to_json(task),mimetype='application/json');
 
 @app.route('/tasks',methods=['POST'])
 def add_task():
@@ -44,12 +45,10 @@ def add_task():
     description = request.form['description'];
     import uuid
     task_id = str(uuid.uuid4())
-    result = mongo.collection.insert_one({'_id':task_id,'assignee':assignee,'description':description,'done':False});
-    return Response(json.dumps({'_id':result.inserted_id}),mimetype='application/json');
+    inserted_id = mongo.add_task(model.Task(task_id,assignee,description,False));
+    return Response(json.dumps({'id':inserted_id}),mimetype='application/json');
 
 @app.route('/tasks/<task_id>',methods=['PUT'])
 def mark_task_as_done(task_id):
-    from pymongo import ReturnDocument
-    doc = mongo.collection.find_one_and_update(filter={'_id':task_id},update={'$set': {'done':True}},
-                                               return_document=ReturnDocument.AFTER)
-    return Response(json.dumps(doc),mimetype='application/json');
+    task = mongo.mark_task_as_done(task_id)
+    return Response(model.obj_to_json(task),mimetype='application/json');

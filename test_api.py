@@ -2,8 +2,14 @@ import unittest
 import tasks_api
 import json
 
+class TestConfig(object):
+    ENVIRONMENT = {
+            'mongodb_connection_uri' : 'mongodb://localhost:27017/',
+            'mongodb_database_name' : 'test'
+        }
+
 def setUpModule():
-    tasks_api.app.config.from_pyfile('test_config.py')
+    tasks_api.app.config.from_object(TestConfig)
     tasks_api.connect_db()
 
 class TestAPI(unittest.TestCase):
@@ -30,7 +36,7 @@ class TestAPI(unittest.TestCase):
         'description':description
     })
     self.assertEqual(rv.status_code,200)
-    task_id = json.loads(rv.data)['_id']
+    task_id = json.loads(rv.data)['id']
     self.assertGreater(len(task_id),20)
     return task_id
 
@@ -90,6 +96,3 @@ class TestAPI(unittest.TestCase):
       self.mark_task_as_done(task_id)
       task = self.get_task(task_id)
       self.assertTrue(task['done'])
-
-if __name__ == '__main__':
-    unittest.main()
