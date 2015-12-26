@@ -2,23 +2,24 @@ from flask import Flask, request, Response
 app = Flask(__name__)
 
 # Todo:
-# - Add configuration for database, collection, and feature toggles
 # - Add unittest
-# - Refactor to abstract the data access
+# - Refactor to abstract the data access, and the models
 
-class Mongo(object):
-    def __init__(self):
-        from pymongo import MongoClient
-        self.client = MongoClient('mongodb://localhost:27017/')
-        self.db = self.client.test
-        self.collection = self.db.tasks
 
-mongo = Mongo()
 from bson.json_util import dumps
+mongo = {}
+
+def connect_db():
+    import mongodb_dao
+    global mongo
+    mongo = mongodb_dao.Mongo(
+        connection_uri=app.config['ENVIRONMENT']['mongodb_connection_uri'],
+        database_name=app.config['ENVIRONMENT']['mongodb_database_name'])
 
 @app.route('/')
 def home():
-    return 'Application is running'
+    import json
+    return Response(json.dumps(app.config['ENVIRONMENT']),mimetype='application/json');
 
 @app.route('/tasks',methods=['GET'])
 def get_tasks():
@@ -48,6 +49,3 @@ def mark_task_as_done(task_id):
     doc = mongo.collection.find_one_and_update(filter={'_id':task_id},update={'$set': {'done':True}},
                                                return_document=ReturnDocument.AFTER)
     return Response(dumps(doc),mimetype='application/json');
-
-if __name__ == '__main__':
-    app.run()
