@@ -44,6 +44,16 @@ class TestAPI(unittest.TestCase):
     self.assertEqual(rv.status_code,200)
     return json.loads(rv.data)
 
+  def get_all_tasks_for_assignee(self,assignee):
+    rv = self.app.get('/tasks?assignee=%s' % assignee)
+    self.assertEqual(rv.status_code,200)
+    return json.loads(rv.data)
+
+  def get_all_undone_tasks_for_assignee(self,assignee):
+    rv = self.app.get('/tasks?assignee=%s&done=False' % assignee)
+    self.assertEqual(rv.status_code,200)
+    return json.loads(rv.data)
+
   def mark_task_as_done(self,task_id):
     rv = self.app.put('/tasks/' + str(task_id))
     self.assertEqual(rv.status_code,200)
@@ -58,8 +68,20 @@ class TestAPI(unittest.TestCase):
         self.assertEqual(task['assignee'],assignee)
         self.assertEqual(task['description'],description)
         self.assertFalse(task['done'])
-    all_tasks = self.get_all_tasks()
-    self.assertEqual(len(all_tasks),3)
+
+  def test_get_multiple_tasks(self):
+    for i in range(3):
+        self.add_task('a1','d1')
+    for i in range(2):
+        self.add_task('a2','d2')
+    self.assertEqual(len(self.get_all_tasks_for_assignee('a1')),3)
+    self.assertEqual(len(self.get_all_tasks_for_assignee('a2')),2)
+    self.assertEqual(len(self.get_all_tasks()),5)
+    task_id = self.add_task('a1','d1')
+    self.assertEqual(len(self.get_all_undone_tasks_for_assignee('a1')),4)
+    self.mark_task_as_done(task_id)
+    self.assertEqual(len(self.get_all_undone_tasks_for_assignee('a1')),3)
+
 
   def test_mark_task_as_done(self):
       task_id = self.add_task('a','d')
