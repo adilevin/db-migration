@@ -2,24 +2,7 @@ import unittest
 import tasks_api
 import json
 
-class TestConfig(object):
-    ENVIRONMENT = {
-            'mongodb_connection_uri' : 'mongodb://localhost:27017/',
-            'mongodb_database_name' : 'test'
-        }
-
-def setUpModule():
-    tasks_api.app.config.from_object(TestConfig)
-    tasks_api.connect_db()
-
-class TestAPI(unittest.TestCase):
-
-  def setUp(self):
-    self.app = tasks_api.app.test_client()
-    tasks_api.clear_db()
-
-  def tearDown(self):
-    tasks_api.clear_db()
+class TestAPI(object):
 
   def test_home_path_returns_200(self):
     rv = self.app.get('/')

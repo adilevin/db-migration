@@ -18,7 +18,7 @@ class Mongo(object):
         print '  Using collection "tasks"'
         self._collection = self.db.tasks
 
-    def clear(self):
+    def delete_all_tasks(self):
         if self.database_name!='test':
             raise 'Only the test database is allowed to be cleared'
         count = self._collection.delete_many({}).deleted_count
