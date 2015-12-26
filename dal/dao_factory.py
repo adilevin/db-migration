@@ -8,4 +8,8 @@ def create_dao(config):
     elif config['repository'] == 'inmemory':
         import in_memory_dao
         return in_memory_dao.InMemoryRepo()
-
+    elif config['repository'] == 'sqlite':
+        import sqlite_dao
+        return sqlite_dao.SQLiteRepo(config['sqlite_file_path'])
+    else:
+        raise 'Invalid "repository" configuration attribute'
