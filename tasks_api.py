@@ -1,6 +1,8 @@
 from flask import Flask, request, Response
+from flask.ext.cors import CORS, cross_origin
 
 app = Flask(__name__)
+cors = CORS(app)
 
 # Todo:
 # - Refactor to abstract the data access, and the models

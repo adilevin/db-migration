@@ -71,8 +71,8 @@
 					</h3>
 				</div>
 				<div class="panel-body">
-					<p ng-repeat="task in getTasks()" ng-cloak>
-						<input value="task.done" type="checkbox" ng-click="doneClicked()">
+					<p ng-repeat="task in tasks" ng-cloak>
+						<input ng-disabled="task.done" ng-checked="task.done" type="checkbox" ng-click="markTaskAsDone(task.id)">
 						{{task.description}}
 					</p>
 				</div>
