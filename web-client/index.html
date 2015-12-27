@@ -67,11 +67,11 @@
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<h3 class="panel-title">
-						Tasks for {{assignee}}
+						Tasks for <span ng-cloak>{{assignee}}</span>
 					</h3>
 				</div>
 				<div class="panel-body">
-					<p ng-repeat="task in getTasks()">
+					<p ng-repeat="task in getTasks()" ng-cloak>
 						<input value="task.done" type="checkbox" ng-click="doneClicked()">
 						{{task.description}}
 					</p>
