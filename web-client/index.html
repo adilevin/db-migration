@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="tasksApp">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Tasks organizer</title>
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+	<script src="tasksApp.js"></script>
+</head>
+<body>
+
+<div class="container-fluid" ng-controller="TasksController">
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="well">
+				<h1>
+					Tasks organizer
+				</h1>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-sm-12">
+			<form class="form-horizontal" role="form">
+				<div class="form-group">
+					<label for="assigneeName" class="col-sm-2 control-label">
+						Assginee
+					</label>
+					<div class="col-sm-4">
+						<input type="text" class="form-control" id="assigneeName" ng-model="new_assignee"/>
+					</div>
+					<div class="col-sm-2">
+						<button type="submit" class="btn btn-default" ng-click="setNewAssignee()">
+							Set assignee
+						</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-sm-12">
+			<form class="form-horizontal" role="form">
+				<div class="form-group">
+					<label for="taskDecription" class="col-sm-2 control-label">
+						Task description
+					</label>
+					<div class="col-sm-4">
+						<input type="text" class="form-control" id="taskDecription" ng-model="new_task_description"/>
+					</div>
+					<div class="col-sm-2">
+						<button type="submit" class="btn btn-default" ng-click="addTask()">
+							Add task
+						</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">
+						Tasks for {{assignee}}
+					</h3>
+				</div>
+				<div class="panel-body">
+					<p ng-repeat="task in getTasks()">
+						<input value="task.done" type="checkbox" ng-click="doneClicked()">
+						{{task.description}}
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+</body>
+</html>
