@@ -2,7 +2,7 @@ angular.module('tasksApp', [])
     .controller('TasksController', function($scope,$http,$httpParamSerializerJQLike) {
         $scope.tasks = [];
         $scope.reloadTaskListFromServer = function() {
-            $http.get('http://localhost:5000/tasks?assignee=' + encodeURI($scope.assignee)).then(
+            $http.get('http://localhost:5000/tasks?done=False&assignee=' + encodeURI($scope.assignee)).then(
                 function onSuccess(result){
                     $scope.tasks = result.data;
                 },
@@ -32,6 +32,7 @@ angular.module('tasksApp', [])
                     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
                 }).then(
                     function onSuccess(result){
+                        $scope.new_task_description = '';
                         $scope.reloadTaskListFromServer();
                     },
                     function onError(result) {
