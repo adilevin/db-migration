@@ -1,4 +1,4 @@
-from pymongo import MongoClient, ReturnDocument
+from pymongo import MongoClient, ReturnDocument, ASCENDING
 import model
 
 def _mongo_dict_to_task(mongo_dict):
@@ -17,6 +17,8 @@ class Mongo(object):
         self.db = self.client[database_name]
         print '  Using collection "tasks"'
         self._collection = self.db.tasks
+        print '  Creating index by "assignee" and "done"'
+        self._collection.create_index([('assignee',ASCENDING),('done',ASCENDING)]);
 
     def delete_all_tasks(self):
         if self.database_name!='test':
