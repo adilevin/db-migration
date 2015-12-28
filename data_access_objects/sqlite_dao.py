@@ -7,7 +7,10 @@ class SQLiteRepo(object):
     def __init__(self,sqlite_file_path):
         print 'Connecting to SQLite db at %s' % sqlite_file_path
         self.conn = sqlite3.connect(sqlite_file_path)
+        print '  Creating tasks table if doesnt exist'
         self.create_table_if_doesnt_exist()
+        print '  Creating index by (assignee,done)'
+        self.create_index_if_doesnt_exist()
 
     def create_table_if_doesnt_exist(self):
         c = self.conn.cursor()
@@ -15,6 +18,10 @@ class SQLiteRepo(object):
             CREATE TABLE IF NOT EXISTS tasks
             (id text, assignee text, description text, done boolean)
         """)
+
+    def create_index_if_doesnt_exist(self):
+        c = self.conn.cursor()
+        c.execute("CREATE INDEX IF NOT EXISTS assignee_done_index ON tasks (assignee,done)")
 
     def delete_all_tasks(self):
         c = self.conn.cursor()

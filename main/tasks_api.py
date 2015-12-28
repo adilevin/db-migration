@@ -9,13 +9,13 @@ cors = CORS(app)
 
 import json
 from model import task_model
-from dal import dao_factory
+import data_access_objects
 
 dao = None
 
 def connect_db():
     global dao
-    dao = dao_factory.create_dao(app.config['ENVIRONMENT'])
+    dao = data_access_objects.dao_factory.create_dao(app.config['ENVIRONMENT'])
 
 def disconnect_db():
     global dao

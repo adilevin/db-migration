@@ -1,6 +1,6 @@
 import unittest
 from test_dao_base import TestDAO
-from dal import dao_factory
+from data_access_objects import dao_factory
 
 class TestInMemoryDAO(unittest.TestCase,TestDAO):
 
