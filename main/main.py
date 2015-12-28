@@ -1,4 +1,4 @@
-from main import tasks_api
+import tasks_api
 
 
 class ProductionConfig(object):
