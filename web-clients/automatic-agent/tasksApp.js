@@ -1,78 +1,79 @@
-function generate_new_task_description()
-{
+function generate_new_task_description() {
     return 'A random task';
 }
 
 angular.module('tasksApp', [])
-    .controller('TasksController', function($scope,$http,$httpParamSerializerJQLike,$interval) {
+    .controller('TasksController', function($scope,$http,$httpParamSerializerJQLike,$interval,$timeout) {
+        $scope.is_active = false;
         $scope.max_num_of_tasks_to_display = 20;
         $scope.assignees = [
-            {name:'John',num_of_uncompleted_tasks:0},
-            {name:'James',num_of_uncompleted_tasks:0}
+            {name:'John',num_of_uncompleted_tasks:0,is_healthy:true},
+            {name:'James',num_of_uncompleted_tasks:0,is_healthy:true}
         ];
-        $scope.num_http_failures = 0;
-        $scope.max_num_http_failures_to_display = 20;
-        $scope.percentage_of_http_failures = function() {
-            var p = $scope.num_http_failures*100/$scope.max_num_http_failures_to_display;
-            return Math.min(p,100)
-        };
         $scope.percentage_of_uncompleted_tasks = function(assignee) {
             var p = assignee.num_of_uncompleted_tasks*100/$scope.max_num_of_tasks_to_display;
             return Math.min(p,100)
         };
-        $scope.create_new_task_for = function(assignee_name) {
+        $scope.create_new_task_for = function(assignee) {
+            if (!$scope.is_active)
+                return;
             $http({
                 method: 'POST',
                 url: 'http://localhost:5000/tasks',
                 data: $httpParamSerializerJQLike({
-                    assignee: assignee_name,
+                    assignee: assignee.name,
                     description: generate_new_task_description()
                 }),
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             }).then(
-                function onSuccess(result){ },
-                function onError(result) { $scope.num_http_failures += 1;}
+                function onSuccess(result) { assignee.is_healthy = true; },
+                function onError(result) { assignee.is_healthy = false; }
+            ).finally(
+                function() { $timeout(function(){$scope.create_new_task_for(assignee)},100); }
             );
         };
         $scope.refresh_task_count_for = function(assignee) {
-          $http.get('http://localhost:5000/tasks?done=False&assignee=' + encodeURI(assignee.name)).then(
+            if (!$scope.is_active)
+                return;
+            $http.get('http://localhost:5000/tasks?done=False&assignee=' + encodeURI(assignee.name)).then(
                 function onSuccess(result){
+                    assignee.is_healthy = true;
                     assignee.num_of_uncompleted_tasks = result.data.length;
                 },
-                function onError(result) {
-                    $scope.num_http_failures += 1;
-                });
+                function onError(result) { assignee.is_healthy = false; }
+            ).finally(
+                function() { $timeout(function(){$scope.refresh_task_count_for(assignee)},0);}
+            );
         };
         $scope.mark_tasks_done_for = function(assignee) {
-          $http.get('http://localhost:5000/tasks?done=False&assignee=' + encodeURI(assignee.name)).then(
-                function onSuccess(result){
-                    result.data.forEach(function(task) {
-                        $http.put('http://localhost:5000/tasks/' + task.id).then(
-                            function onSuccess(result){ },
-                            function onError(result) { $scope.num_http_failures += 1; });
+            if (!$scope.is_active)
+                return;
+            $http.get('http://localhost:5000/tasks?done=False&assignee=' + encodeURI(assignee.name)).then(
+                function onSuccess(result) {
+                    assignee.is_healthy = true;
+                    result.data.forEach(function (task) {
+                        $http.put('http://localhost:5000/tasks/' + task.id);
                     });
-                    $scope.num_http_failures = Math.floor($scope.num_http_failures/2);
                 },
-                function onError(result) {
-                    $scope.num_http_failures += 1;
-                });
+                function onError(result) { assignee.is_healthy = false; }
+            ).finally(
+                function () {
+                    $timeout(function () {
+                        $scope.mark_tasks_done_for(assignee);
+                    }, 2000);
+                }
+            );
         };
-        $scope.produce_tasks = function() {
+        $scope.activate = function() {
+            $scope.is_active = true;
             $scope.assignees.forEach(function(assignee) {
-                $scope.create_new_task_for(assignee.name);
-            })
-        };
-        $scope.mark_tasks_as_done = function() {
-            $scope.assignees.forEach(function(assignee) {
+                $scope.create_new_task_for(assignee);
                 $scope.mark_tasks_done_for(assignee);
-            })
-        };
-        $scope.refresh_task_count = function() {
-            $scope.assignees.forEach(function(assignee) {
                 $scope.refresh_task_count_for(assignee);
-            })
+            });
         };
-        $interval(function(){$scope.refresh_task_count()},1000);
-        $interval(function(){$scope.produce_tasks()},1000);
-        $interval(function(){$scope.mark_tasks_as_done()},5000);
+
+        $scope.deactivate = function() {
+            $scope.is_active = false;
+        }
     });

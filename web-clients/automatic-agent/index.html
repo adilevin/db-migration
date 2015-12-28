@@ -11,40 +11,29 @@
 </head>
 <body>
 
-<div class="container-fluid" ng-controller="TasksController">
+<div ng-cloak class="container-fluid" ng-controller="TasksController">
 	<br>
 	<div class="row">
 		<div class="col-sm-12">
 			<div class="progress" ng-repeat="assignee in assignees">
-				<div class="progress-bar progress-bar-success" role="progressbar"
+				<div ng-class="['progress-bar', {'progress-bar-success':assignee.is_healthy, 'progress-bar-danger':!assignee.is_healthy}]"
+					 role="progressbar"
 					 aria-valuenow="{{assignee.num_of_uncompleted_tasks}}" aria-valuemin="0"
 					 aria-valuemax="100"
 					 style="width: {{percentage_of_uncompleted_tasks(assignee)}}%">
 					<span>{{assignee.name}}:  {{assignee.num_of_uncompleted_tasks}}</span>
 				</div>
 			</div>
-			<div class="progress">
-				<div class="progress-bar progress-bar-danger" role="progressbar"
-					 aria-valuenow="{{num_http_failures}}" aria-valuemin="0"
-					 aria-valuemax="100"
-					 style="width: {{percentage_of_http_failures()}}%">
-					<span>Failures:  {{num_http_failures}}</span>
-				</div>
-			</div>
 		</div>
 		<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	</div>
 
-<!--		<button type="submit" class="btn btn-default" ng-click="produce_tasks()">
-			Produce tasks
-		</button>
-		<button type="submit" class="btn btn-default" ng-click="mark_tasks_as_done()">
-			Mark tasks as done
-		</button>
-		<button type="submit" class="btn btn-default" ng-click="refresh_task_count()">
-			Refresh
-		</button>-->
-
+	<div class="row">
+		<div class="col-sm-1">
+			<button ng-if="is_active" type="submit" class="btn btn-danger" ng-click="deactivate()">Stop</button>
+			<button ng-if="!is_active" type="submit" class="btn btn-primary" ng-click="activate()">Start</button>
+		</div>
 	</div>
 </div>
 </body>
