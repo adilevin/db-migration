@@ -16,6 +16,7 @@ dao = None
 def connect_db():
     global dao
     dao = dao_factory.create_dao(app.config['ENVIRONMENT'])
+    print 'Database is connected'
 
 def disconnect_db():
     global dao

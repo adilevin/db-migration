@@ -15,7 +15,7 @@ Adi Levin
 - Start a MongoDB instance by running
 >`mongod`
 
-- [Get greenlet package](https://pypi.python.org/pypi/greenlet) for Python
+- [Installl greenlet package](https://pypi.python.org/pypi/greenlet), a prerequisite for gevent
 >`pip install greenlet`
 
 - [Install gevent](http://www.gevent.org/) as the WSGI server
@@ -23,6 +23,22 @@ Adi Levin
 ###Setup Python project
 
 - Clone the repository
- 
+
 - Run tests
-> `python run_all_tests.py`
+> `python -m unittest discover -s test`
+
+###Run application
+ 
+- Open a command-line in the db-migration folder
+
+- Set PYTHONPATH to the current directory
+> `set PYTHONPATH=.` (on Windows)
+ 
+- Run the application
+> `python main/main.py`
+
+###Start web clients
+
+- Open `web-clients/user-console/index.html` in a browser
+
+- Open `web-clients/automatic-agent/index.html` in a browser
