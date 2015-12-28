@@ -1,11 +1,13 @@
 import unittest
-import tasks_api
+
+from main import tasks_api
 import test_api_base
+
 
 class SQLiteTestConfig(object):
     ENVIRONMENT = {
             'repository':'sqlite',
-            'sqlite_file_path' : 'sqlite_test.db',
+            'sqlite_file_path' : 'sqlite_files/sqlite_test.db',
         }
 
 class TestAPISQLite(unittest.TestCase,test_api_base.TestAPI):

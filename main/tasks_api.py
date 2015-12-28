@@ -1,5 +1,5 @@
 from flask import Flask, request, Response
-from flask.ext.cors import CORS, cross_origin
+from flask.ext.cors import CORS
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -8,7 +8,7 @@ cors = CORS(app)
 # - Refactor to abstract the data access, and the models
 
 import json
-import model
+from model import task_model
 from dal import dao_factory
 
 dao = None
@@ -38,12 +38,12 @@ def get_tasks():
     if 'done' in request.args.keys():
         filter_dict['done'] = ast.literal_eval(request.args['done'])
     tasks = dao.get_tasks_by_filter(filter_dict)
-    return Response(model.array_to_json(tasks),mimetype='application/json');
+    return Response(task_model.array_to_json(tasks),mimetype='application/json');
 
 @app.route('/tasks/<task_id>',methods=['GET'])
 def get_task(task_id):
     task = dao.get_task_by_id(task_id)
-    return Response(model.obj_to_json(task),mimetype='application/json');
+    return Response(task_model.obj_to_json(task),mimetype='application/json');
 
 @app.route('/tasks',methods=['POST'])
 def add_task():
@@ -51,10 +51,10 @@ def add_task():
     description = request.form['description'];
     import uuid
     task_id = str(uuid.uuid4())
-    inserted_id = dao.add_task(model.Task(task_id,assignee,description,False));
+    inserted_id = dao.add_task(task_model.Task(task_id,assignee,description,False));
     return Response(json.dumps({'id':inserted_id}),mimetype='application/json');
 
 @app.route('/tasks/<task_id>',methods=['PUT'])
 def mark_task_as_done(task_id):
     task = dao.mark_task_as_done(task_id)
-    return Response(model.obj_to_json(task),mimetype='application/json');
+    return Response(task_model.obj_to_json(task),mimetype='application/json');

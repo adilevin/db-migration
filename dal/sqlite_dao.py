@@ -1,5 +1,7 @@
-import model
 import sqlite3
+
+from model import task_model
+
 
 class SQLiteRepo(object):
     def __init__(self,sqlite_file_path):
@@ -23,7 +25,7 @@ class SQLiteRepo(object):
         c = self.conn.cursor()
         c.execute("SELECT * FROM tasks WHERE id=?",(task_id,))
         tuple = c.fetchone()
-        return model.Task(tuple[0],tuple[1],tuple[2],tuple[3])
+        return task_model.Task(tuple[0],tuple[1],tuple[2],tuple[3])
 
     def get_tasks_by_filter(self,filter_dict):
         c = self.conn.cursor()
@@ -35,7 +37,7 @@ class SQLiteRepo(object):
         print query
         c.execute(query)
         tuples = c.fetchall()
-        return [model.Task(tuple[0],tuple[1],tuple[2],tuple[3]) for tuple in tuples]
+        return [task_model.Task(tuple[0],tuple[1],tuple[2],tuple[3]) for tuple in tuples]
 
     # Returns the inserted task_id
     def add_task(self,task):
@@ -55,5 +57,5 @@ class SQLiteRepo(object):
 if __name__ == '__main__':
     s = SQLiteRepo('c:/temp/s.db')
     s.create_table_if_doesnt_exist()
-    s.add_task(model.Task('xsdf98ksljhfsf','adi','get up',True))
+    s.add_task(task_model.Task('xsdf98ksljhfsf','adi','get up',True))
     print s.get_task_by_id('xsdf98ksljhfsf')

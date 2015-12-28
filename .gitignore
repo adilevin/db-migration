@@ -281,3 +281,4 @@ $RECYCLE.BIN/
 *.lnk
 .idea
 *.pyc
+sqlite_files

@@ -13,13 +13,16 @@ Adi Levin
 - [Install MongoDB](https://docs.mongodb.org/manual/)
 
 - Start a MongoDB instance by running
->mongod
+>`mongod`
 
 - [Get greenlet package](https://pypi.python.org/pypi/greenlet) for Python
->pip install greenlet
+>`pip install greenlet`
 
 - [Install gevent](http://www.gevent.org/) as the WSGI server
 
-###Things to be aware of
+###Setup Python project
 
-- 
+- Clone the repository
+ 
+- Run tests
+> `python run_all_tests.py`

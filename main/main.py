@@ -1,4 +1,5 @@
-import tasks_api
+from main import tasks_api
+
 
 class ProductionConfig(object):
     ENVIRONMENT = {
@@ -10,7 +11,7 @@ class ProductionConfig(object):
 #class ProductionConfig(object):
 #    ENVIRONMENT = {
 #            'repository':'sqlite',
-#            'sqlite_file_path' : 'sqlite_prod.db',
+#            'sqlite_file_path' : 'sqlite_files/sqlite_prod.db',
 #        }
 
 tasks_api.app.config.from_object(ProductionConfig)

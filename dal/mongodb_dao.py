@@ -1,11 +1,13 @@
 from pymongo import MongoClient, ReturnDocument, ASCENDING
-import model
+
+from model import task_model
+
 
 def _mongo_dict_to_task(mongo_dict):
     task_as_dict = dict(mongo_dict)
     task_as_dict['id'] = task_as_dict['_id']
     task_as_dict.pop('_id')
-    return model.create_task_from_dict(task_as_dict)
+    return task_model.create_task_from_dict(task_as_dict)
 
 
 class Mongo(object):

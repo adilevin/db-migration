@@ -1,10 +1,12 @@
 import uuid
-import model
+
+from model import task_model
+
 
 class TestDAO(object):
 
   def add_task(self,assignee,description):
-    task_id = self.dao.add_task(model.Task(str(uuid.uuid4()),assignee,description,False))
+    task_id = self.dao.add_task(task_model.Task(str(uuid.uuid4()),assignee,description,False))
     self.assertGreater(len(task_id),20)
     return task_id
 

@@ -1,5 +1,3 @@
-import unittest
-import tasks_api
 import json
 
 class TestAPI(object):

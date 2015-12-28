@@ -1,6 +1,8 @@
 import unittest
-import tasks_api
+
+from main import tasks_api
 import test_api_base
+
 
 class InMemoryTestConfig(object):
     ENVIRONMENT = {

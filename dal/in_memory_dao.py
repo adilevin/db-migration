@@ -1,4 +1,5 @@
-import model
+from model import task_model
+
 
 class InMemoryRepo(object):
     def __init__(self):
@@ -23,6 +24,6 @@ class InMemoryRepo(object):
 
     def mark_task_as_done(self,task_id):
         task = self.get_task_by_id(task_id)
-        new_task = model.Task(task.id,task.assignee,task.description,True)
+        new_task = task_model.Task(task.id,task.assignee,task.description,True)
         self._tasks[task_id] = new_task
         return new_task
