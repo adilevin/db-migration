@@ -16,7 +16,7 @@
 	<div class="row">
 		<div class="col-sm-12">
 			<div class="progress" ng-repeat="assignee in assignees">
-				<div ng-class="['progress-bar', {'progress-bar-success':assignee.is_healthy, 'progress-bar-danger':!assignee.is_healthy}]"
+				<div ng-class="['progress-bar', {'progress-bar-success':assignee.is_healthy(), 'progress-bar-danger':!assignee.is_healthy()}]"
 					 role="progressbar"
 					 aria-valuenow="{{assignee.num_of_uncompleted_tasks}}" aria-valuemin="0"
 					 aria-valuemax="100"

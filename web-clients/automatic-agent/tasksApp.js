@@ -2,14 +2,25 @@ function generate_new_task_description() {
     return 'A random task';
 }
 
+function User(name) {
+    this.name = name;
+    this.num_of_uncompleted_tasks = 0;
+    this.healthy_task_post = true;
+    this.healthy_task_get = true;
+    this.healthy_task_put = true;
+}
+
+var http_timeout_milliseconds = 1000;
+
+User.prototype.is_healthy = function() {
+    return (this.healthy_task_post && this.healthy_task_get && this.healthy_task_put);
+};
+
 angular.module('tasksApp', [])
     .controller('TasksController', function($scope,$http,$httpParamSerializerJQLike,$interval,$timeout) {
         $scope.is_active = false;
         $scope.max_num_of_tasks_to_display = 20;
-        $scope.assignees = [
-            {name:'John',num_of_uncompleted_tasks:0,is_healthy:true},
-            {name:'James',num_of_uncompleted_tasks:0,is_healthy:true}
-        ];
+        $scope.assignees = [new User('Bill'), new User('Ronald'), new User('James')];
         $scope.percentage_of_uncompleted_tasks = function(assignee) {
             var p = assignee.num_of_uncompleted_tasks*100/$scope.max_num_of_tasks_to_display;
             return Math.min(p,100)
@@ -20,14 +31,15 @@ angular.module('tasksApp', [])
             $http({
                 method: 'POST',
                 url: 'http://localhost:5000/tasks',
+                timeout: http_timeout_milliseconds,
                 data: $httpParamSerializerJQLike({
                     assignee: assignee.name,
                     description: generate_new_task_description()
                 }),
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             }).then(
-                function onSuccess(result) { assignee.is_healthy = true; },
-                function onError(result) { assignee.is_healthy = false; }
+                function onSuccess(result) { assignee.healthy_task_post = true; },
+                function onError(result) { assignee.healthy_task_post = false; }
             ).finally(
                 function() { $timeout(function(){$scope.create_new_task_for(assignee)},100); }
             );
@@ -35,12 +47,12 @@ angular.module('tasksApp', [])
         $scope.refresh_task_count_for = function(assignee) {
             if (!$scope.is_active)
                 return;
-            $http.get('http://localhost:5000/tasks?done=False&assignee=' + encodeURI(assignee.name)).then(
+            $http.get('http://localhost:5000/tasks?done=False&assignee=' + encodeURI(assignee.name),{timeout:http_timeout_milliseconds}).then(
                 function onSuccess(result){
-                    assignee.is_healthy = true;
+                    assignee.healthy_task_get = true;
                     assignee.num_of_uncompleted_tasks = result.data.length;
                 },
-                function onError(result) { assignee.is_healthy = false; }
+                function onError(result) { assignee.healthy_task_get = false; }
             ).finally(
                 function() { $timeout(function(){$scope.refresh_task_count_for(assignee)},0);}
             );
@@ -48,14 +60,16 @@ angular.module('tasksApp', [])
         $scope.mark_tasks_done_for = function(assignee) {
             if (!$scope.is_active)
                 return;
-            $http.get('http://localhost:5000/tasks?done=False&assignee=' + encodeURI(assignee.name)).then(
+            $http.get('http://localhost:5000/tasks?done=False&assignee=' + encodeURI(assignee.name),{timeout:http_timeout_milliseconds}).then(
                 function onSuccess(result) {
-                    assignee.is_healthy = true;
+                    assignee.healthy_task_put = true;
                     result.data.forEach(function (task) {
-                        $http.put('http://localhost:5000/tasks/' + task.id);
+                        $http.put('http://localhost:5000/tasks/' + task.id).catch(function() {
+                            assignee.healthy_task_put = false;
+                        });
                     });
                 },
-                function onError(result) { assignee.is_healthy = false; }
+                function onError(result) { assignee.healthy_task_get = false; }
             ).finally(
                 function () {
                     $timeout(function () {
