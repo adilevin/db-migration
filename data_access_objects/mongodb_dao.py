@@ -1,7 +1,6 @@
 from pymongo import MongoClient, ReturnDocument, ASCENDING
 from pymongo.errors import ServerSelectionTimeoutError
 from exceptions import TaskIdNotFoundException
-
 from model import task_model
 
 
@@ -48,4 +47,6 @@ class Mongo(object):
     def mark_task_as_done(self,task_id):
         doc = self._collection.find_one_and_update(filter={'_id':task_id},update={'$set': {'done':True}},
             return_document=ReturnDocument.AFTER)
+        if doc==None:
+            raise TaskIdNotFoundException(task_id)
         return _mongo_dict_to_task(doc)

@@ -38,3 +38,13 @@ class TestMigrationStep4(unittest.TestCase,TestDAO):
   def tearDown(self):
       self.dao.delete_all_tasks()
       del(self.dao)
+
+
+class TestMigrationStep5(unittest.TestCase,TestDAO):
+
+  def setUp(self):
+      self.dao = create_data_access_object(5)
+
+  def tearDown(self):
+      self.dao.delete_all_tasks()
+      del(self.dao)

@@ -2,6 +2,7 @@ import uuid
 
 from model import task_model
 from data_access_objects.exceptions import TaskIdNotFoundException
+from data_access_objects import migration_utils
 
 class TestDAO(object):
 
@@ -41,9 +42,28 @@ class TestDAO(object):
       task = self.dao.get_task_by_id(task_id)
       self.assertTrue(task.done)
 
-  def test_exception_raised_in_case_task_not_found(self):
+  def test_exception_raised_by_get_task_in_case_task_not_found(self):
       task_id = 'INVALID_TASK_ID'
       try:
         task = self.dao.get_task_by_id(task_id)
       except TaskIdNotFoundException as e:
           self.assertEquals(e.task_id,task_id)
+
+  def test_exception_raised_by_mark_task_as_done_in_case_task_not_found(self):
+      task_id = 'INVALID_TASK_ID'
+      try:
+        self.dao.mark_task_as_done(task_id)
+      except TaskIdNotFoundException as e:
+          self.assertEquals(e.task_id,task_id)
+
+  def test_keep_only_undone_tasks(self):
+    for i in range(2):
+        self.add_task('a1','d1')
+    tasks2 = self.dao.get_all_undone_tasks_for_assignee('a1')
+    self.assertEqual(len(tasks2),2)
+    task3_id = self.add_task('a1','d1')
+    tasks3 = self.dao.get_all_undone_tasks_for_assignee('a1')
+    self.assertEqual(len(tasks3),3)
+    self.dao.mark_task_as_done(task3_id)
+    tasks_remaining = migration_utils.keep_only_undone_tasks(self.dao,tasks3)
+    self.assertTrue(set(tasks_remaining)==set(tasks2))
