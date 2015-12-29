@@ -58,7 +58,6 @@ class MigrationDAO(object):
 
     def resolve_task_collection_conflicts(self,old,new):
         merged_task_list = merge_task_collection(old,new)
-        merged_task_list = [task_model.mark_as_done(task) for task in merged_task_list]
         merged_task_list = keep_only_undone_tasks(self.old_db,merged_task_list)
         merged_task_list = keep_only_undone_tasks(self.new_db,merged_task_list)
         return merged_task_list
