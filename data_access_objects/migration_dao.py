@@ -1,7 +1,7 @@
 import sqlite3
 
 from migration_utils import merge_task_collection, keep_only_undone_tasks
-from exceptions import TaskIdNotFoundException
+from exceptions import TaskIdNotFoundException, DBWriteException
 
 # Step 2: Ignore the new DB. Purpose: Test new DB in test environments.
 # Step 3: Write to old DB first, then to new DB. Read from the old DB. Purpose: Test new write path.
@@ -79,11 +79,17 @@ class MigrationDAO(object):
             return res
         elif self.migration_step in [3,4]:
             res = self.old_db.add_task(task)
-            self.new_db.add_task(task)
+            try:
+                self.new_db.add_task(task)
+            except DBWriteException:
+                pass
             return res
         elif self.migration_step == 5:
             res = self.new_db.add_task(task)
-            self.old_db.add_task(task)
+            try:
+                self.old_db.add_task(task)
+            except DBWriteException:
+                pass
             return res
 
     def mark_task_as_done(self,task_id):
@@ -92,9 +98,15 @@ class MigrationDAO(object):
             return res
         elif self.migration_step in [3,4]:
             res = self.old_db.mark_task_as_done(task_id)
-            self.new_db.mark_task_as_done(task_id)
+            try:
+                self.new_db.mark_task_as_done(task_id)
+            except DBWriteException:
+                pass
             return res
         elif self.migration_step==5:
             res_new = self.new_db.mark_task_as_done(task_id)
-            res_old = self.old_db.mark_task_as_done(task_id)
+            try:
+                res_old = self.old_db.mark_task_as_done(task_id)
+            except DBWriteException:
+                pass
             return res_new

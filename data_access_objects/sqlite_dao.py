@@ -3,10 +3,9 @@ import sqlite3
 from model import task_model
 from exceptions import TaskIdNotFoundException
 
-
-class SQLiteRepo(object):
-    def __init__(self,sqlite_file_path):
-        self.conn = sqlite3.connect(sqlite_file_path)
+class SQLiteDAO(object):
+    def __init__(self,config):
+        self.conn = sqlite3.connect(config['sqlite_file_path'])
         self.create_table_if_doesnt_exist()
         self.create_index_if_doesnt_exist()
 
@@ -54,7 +53,7 @@ class SQLiteRepo(object):
         return self.get_task_by_id(task_id)
 
 if __name__ == '__main__':
-    s = SQLiteRepo('c:/temp/s.db')
+    s = SQLiteDAO('c:/temp/s.db')
     s.create_table_if_doesnt_exist()
     s.add_task(task_model.Task('xsdf98ksljhfsf','adi','get up',True))
     print s.get_task_by_id('xsdf98ksljhfsf')

@@ -10,15 +10,15 @@ def _mongo_dict_to_task(mongo_dict):
     task_as_dict.pop('_id')
     return task_model.create_task_from_dict(task_as_dict)
 
-class Mongo(object):
-    def __init__(self,connection_uri,database_name):
-        self.database_name = database_name
-        self.client = MongoClient(connection_uri,serverSelectionTimeoutMS=1000)
+class MongoDBDAO(object):
+    def __init__(self,config):
+        self.database_name = config['mongodb_database_name']
+        self.client = MongoClient(config['mongodb_connection_uri'],serverSelectionTimeoutMS=1000)
         try:
             self.client.server_info()
         except ServerSelectionTimeoutError:
             raise Exception('Failed to connect to MongoDB at %s\nCheck that the connection URI is good and that mongod is running' % connection_uri)
-        self.db = self.client[database_name]
+        self.db = self.client[self.database_name]
         self._collection = self.db.tasks
         self._collection.create_index([('assignee',ASCENDING),('done',ASCENDING)]);
 
