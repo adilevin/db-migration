@@ -1,18 +1,27 @@
+import in_memory_dao
+import migration_dao
+import mongodb_dao
+import sqlite_dao
+
+def create_mongodb_dao(config):
+    return mongodb_dao.Mongo(
+        connection_uri=config['mongodb_connection_uri'],
+        database_name=config['mongodb_database_name'])
+
+def create_sqlite_dao(config):
+    return sqlite_dao.SQLiteRepo(config['sqlite_file_path'])
 
 def create_dao(config):
     if config['repository'] == 'migrate_from_sqlite_to_mongodb':
-        import sqlite_to_mongo_migration_dao
-        return sqlite_to_mongo_migration_dao.MigrationDAO(config)
+        return migration_dao.MigrationDAO(
+            create_sqlite_dao(config),
+            create_mongodb_dao(config),
+            config['migration_step'])
     elif config['repository'] == 'mongodb':
-        import mongodb_dao
-        return mongodb_dao.Mongo(
-            connection_uri=config['mongodb_connection_uri'],
-            database_name=config['mongodb_database_name'])
+        return create_mongodb_dao(config)
     elif config['repository'] == 'inmemory':
-        import in_memory_dao
         return in_memory_dao.InMemoryRepo()
     elif config['repository'] == 'sqlite':
-        import sqlite_dao
-        return sqlite_dao.SQLiteRepo(config['sqlite_file_path'])
+        return create_sqlite_dao(config)
     else:
         raise 'Invalid "repository" configuration attribute'

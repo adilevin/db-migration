@@ -1,8 +1,6 @@
 import sqlite3
 
-from model import task_model
 from migration_utils import merge_task_collection, keep_only_undone_tasks
-import mongodb_dao, sqlite_dao
 from exceptions import TaskIdNotFoundException
 
 # Step 2: Ignore the new DB. Purpose: Test new DB in test environments.
@@ -17,12 +15,10 @@ from exceptions import TaskIdNotFoundException
 # Step 8: Write and read only to new DB.
 
 class MigrationDAO(object):
-    def __init__(self,config):
-        self.old_db = sqlite_dao.SQLiteRepo(config['sqlite_file_path'])
-        self.new_db = mongodb_dao.Mongo(
-            connection_uri=config['mongodb_connection_uri'],
-            database_name=config['mongodb_database_name'])
-        self.migration_step = config['migration_feature_toggle']
+    def __init__(self,old_db,new_db,migration_step):
+        self.old_db = old_db
+        self.new_db = new_db
+        self.migration_step = migration_step
 
     def delete_all_tasks(self):
         self.old_db.delete_all_tasks()

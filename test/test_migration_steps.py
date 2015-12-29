@@ -8,7 +8,7 @@ def create_data_access_object(step):
             'mongodb_connection_uri' : 'mongodb://localhost:27017/',
             'mongodb_database_name' : 'test',
             'sqlite_file_path' : 'sqlite_files/sqlite_test.db',
-            'migration_feature_toggle' : step
+            'migration_step' : step
         })
 
 
