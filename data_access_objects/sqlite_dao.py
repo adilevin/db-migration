@@ -5,11 +5,8 @@ from model import task_model
 
 class SQLiteRepo(object):
     def __init__(self,sqlite_file_path):
-        print 'Connecting to SQLite db at %s' % sqlite_file_path
         self.conn = sqlite3.connect(sqlite_file_path)
-        print '  Creating tasks table if doesnt exist'
         self.create_table_if_doesnt_exist()
-        print '  Creating index by (assignee,done)'
         self.create_index_if_doesnt_exist()
 
     def create_table_if_doesnt_exist(self):
@@ -41,7 +38,6 @@ class SQLiteRepo(object):
             query += ' AND assignee="%s"' % filter_dict['assignee']
         if 'done' in filter_dict.keys():
             query += ' AND done=%i' % filter_dict['done']
-        print query
         c.execute(query)
         tuples = c.fetchall()
         return [task_model.Task(tuple[0],tuple[1],tuple[2],tuple[3]) for tuple in tuples]

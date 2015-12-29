@@ -1,4 +1,5 @@
 from pymongo import MongoClient, ReturnDocument, ASCENDING
+from pymongo.errors import ServerSelectionTimeoutError
 
 from model import task_model
 
@@ -9,18 +10,18 @@ def _mongo_dict_to_task(mongo_dict):
     task_as_dict.pop('_id')
     return task_model.create_task_from_dict(task_as_dict)
 
-
 class Mongo(object):
     def __init__(self,connection_uri,database_name):
-        print 'Connecting to %s' % connection_uri
         self.database_name = database_name
-        self.client = MongoClient(connection_uri)
-        print '  Using database "%s"' % database_name
+        self.client = MongoClient(connection_uri,serverSelectionTimeoutMS=1000)
+        try:
+            self.client.server_info()
+        except ServerSelectionTimeoutError:
+            raise Exception('Failed to connect to MongoDB at %s\nCheck that the connection URI is good and that mongod is running' % connection_uri)
         self.db = self.client[database_name]
-        print '  Using collection "tasks"'
         self._collection = self.db.tasks
-        print '  Creating index by "assignee" and "done"'
         self._collection.create_index([('assignee',ASCENDING),('done',ASCENDING)]);
+
 
     def delete_all_tasks(self):
         if self.database_name!='test':

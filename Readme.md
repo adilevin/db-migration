@@ -32,7 +32,7 @@ switch between different application versions without downtime
 
 ###Setup reverse proxy
 
-- Copy nginx/nginx.conf to the conf subfolder in the nginx folder. It routes traffic from port 5000 to port 8000.
+- Copy nginx/nginx.conf to the conf subfolder in the nginx installation folder. It routes traffic from port 5000 to port 8000.
  
 - Run NGINX
 > start nginx
@@ -52,4 +52,3 @@ switch between different application versions without downtime
 - For the user console, open [localhost:5000](http://localhost:5000) 
 
 - For the automatic task producer, open [localhost:5000/static/taskProducer.html](localhost:5000/static/taskProducer.html)
-

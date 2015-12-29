@@ -21,10 +21,14 @@ class ProductionConfig(object):
 #        }
 
 
-print 'Starting application at port %d' % port
 tasks_api.app.config.from_object(ProductionConfig)
 
+import json
+print json.dumps(tasks_api.app.config['ENVIRONMENT'],indent=True)
+
+print 'Connecting to database...'
 tasks_api.connect_db()
+print 'Database is connected'
 from gevent.wsgi import WSGIServer
 http_server = WSGIServer(('', port), tasks_api.app)
 http_server.serve_forever()

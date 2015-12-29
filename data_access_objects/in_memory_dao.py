@@ -1,9 +1,7 @@
 from model import task_model
 
-
 class InMemoryRepo(object):
     def __init__(self):
-        print 'Creating in-memory repository'
         self._tasks = {}
 
     def delete_all_tasks(self):

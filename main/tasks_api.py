@@ -1,8 +1,9 @@
 from flask import Flask, request, Response
-from flask.ext.cors import CORS
 
 app = Flask(__name__)
-cors = CORS(app)
+
+#from flask.ext.cors import CORS
+#cors = CORS(app)
 
 # Todo:
 # - Refactor to abstract the data access, and the models
@@ -16,7 +17,6 @@ dao = None
 def connect_db():
     global dao
     dao = dao_factory.create_dao(app.config['ENVIRONMENT'])
-    print 'Database is connected'
 
 def disconnect_db():
     global dao
