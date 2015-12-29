@@ -37,12 +37,12 @@ class MigrationDAO(object):
             except TaskIdNotFoundException:
                 return self.old_db.get_task_by_id(task_id)
 
-    def get_tasks_by_filter(self,filter_dict):
+    def get_all_undone_tasks_for_assignee(self,assignee):
         if self.migration_feature_toggle in [2,3]:
-            return self.old_db.get_tasks_by_filter(filter_dict)
+            return self.old_db.get_all_undone_tasks_for_assignee(assignee)
         if self.migration_feature_toggle==4:
-            tasks_from_old_db = self.old_db.get_tasks_by_filter(filter_dict)
-            tasks_from_new_db = self.new_db.get_tasks_by_filter(filter_dict)
+            tasks_from_old_db = self.old_db.get_all_undone_tasks_for_assignee(assignee)
+            tasks_from_new_db = self.new_db.get_all_undone_tasks_for_assignee(assignee)
             return merge_task_collection(tasks_from_old_db,tasks_from_new_db)
 
     # Returns the inserted task_id

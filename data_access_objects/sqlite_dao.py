@@ -19,7 +19,7 @@ class SQLiteRepo(object):
 
     def create_index_if_doesnt_exist(self):
         c = self.conn.cursor()
-        c.execute("CREATE INDEX IF NOT EXISTS assignee_done_index ON tasks (assignee,done)")
+        c.execute('CREATE INDEX IF NOT EXISTS assignee_done_index ON tasks (assignee,done)')
 
     def delete_all_tasks(self):
         c = self.conn.cursor()
@@ -28,35 +28,28 @@ class SQLiteRepo(object):
 
     def get_task_by_id(self,task_id):
         c = self.conn.cursor()
-        c.execute("SELECT * FROM tasks WHERE id=?",(task_id,))
+        c.execute('SELECT * FROM tasks WHERE id=?',(task_id,))
         tuple = c.fetchone()
         if tuple==None:
             raise TaskIdNotFoundException(task_id)
         return task_model.Task(tuple[0],tuple[1],tuple[2],tuple[3])
 
-    def get_tasks_by_filter(self,filter_dict):
+    def get_all_undone_tasks_for_assignee(self,assignee):
         c = self.conn.cursor()
-        query = "SELECT * FROM tasks WHERE 1"
-        if 'assignee' in filter_dict.keys():
-            query += ' AND assignee="%s"' % filter_dict['assignee']
-        if 'done' in filter_dict.keys():
-            query += ' AND done=%i' % filter_dict['done']
-        c.execute(query)
+        c.execute('SELECT * FROM tasks WHERE assignee="%s" AND done=0' % assignee)
         tuples = c.fetchall()
         return [task_model.Task(tuple[0],tuple[1],tuple[2],tuple[3]) for tuple in tuples]
 
     # Returns the inserted task_id
     def add_task(self,task):
         c = self.conn.cursor()
-        c.execute("""
-           INSERT INTO tasks VALUES (?,?,?,?)
-        """,(task.id, task.assignee, task.description, task.done))
+        c.execute('INSERT INTO tasks VALUES (?,?,?,?)',(task.id, task.assignee, task.description, task.done))
         self.conn.commit()
         return task.id
 
     def mark_task_as_done(self,task_id):
         c = self.conn.cursor()
-        c.execute("UPDATE tasks SET done=1 WHERE id=?",(task_id,))
+        c.execute('UPDATE tasks SET done=1 WHERE id=?',(task_id,))
         self.conn.commit()
         return self.get_task_by_id(task_id)
 

@@ -35,8 +35,8 @@ class Mongo(object):
             raise TaskIdNotFoundException(task_id)
         return _mongo_dict_to_task(task_as_dict)
 
-    def get_tasks_by_filter(self,filter):
-        cursor = self._collection.find(filter)
+    def get_all_undone_tasks_for_assignee(self,assignee):
+        cursor = self._collection.find({'assignee':assignee,'done':False})
         tasks = [_mongo_dict_to_task(x) for x in cursor]
         return tasks
 

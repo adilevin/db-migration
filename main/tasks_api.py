@@ -35,14 +35,8 @@ def get_config():
     return Response(json.dumps(app.config['ENVIRONMENT']),mimetype='application/json');
 
 @app.route('/tasks',methods=['GET'])
-def get_tasks():
-    import ast
-    filter_dict = {}
-    if 'assignee' in request.args.keys():
-        filter_dict['assignee'] = request.args['assignee']
-    if 'done' in request.args.keys():
-        filter_dict['done'] = ast.literal_eval(request.args['done'])
-    tasks = dao.get_tasks_by_filter(filter_dict)
+def get_all_undone_tasks_for_assignee():
+    tasks = dao.get_all_undone_tasks_for_assignee(request.args['assignee'])
     return Response(task_model.array_to_json(tasks),mimetype='application/json');
 
 @app.route('/tasks/<task_id>',methods=['GET'])

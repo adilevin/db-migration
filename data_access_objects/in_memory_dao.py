@@ -14,9 +14,9 @@ class InMemoryRepo(object):
         except Exception as e:
             raise TaskIdNotFoundException(task_id)
 
-    def get_tasks_by_filter(self,filter_dict):
-        assignee_predicate = lambda task : (not ('assignee' in filter_dict.keys())) or (task.assignee==filter_dict['assignee'])
-        done_predicate = lambda task : (not ('done' in filter_dict.keys())) or (task.done==filter_dict['done'])
+    def get_all_undone_tasks_for_assignee(self,assignee):
+        assignee_predicate = lambda task : (task.assignee==assignee)
+        done_predicate = lambda task : (task.done==False)
         return filter(lambda task : assignee_predicate(task) and done_predicate(task),self._tasks.values())
 
     # Returns the inserted task_id
