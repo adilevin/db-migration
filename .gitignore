@@ -282,3 +282,4 @@ $RECYCLE.BIN/
 .idea
 *.pyc
 sqlite_files
+nginx-1.9.9

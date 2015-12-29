@@ -26,8 +26,12 @@ def disconnect_db():
 def clear_db():
     dao.delete_all_tasks()
 
-@app.route('/')
-def home():
+@app.route('/',methods=['GET'])
+def root():
+    return app.send_static_file('userConsole.html')
+
+@app.route('/config',methods=['GET'])
+def get_config():
     return Response(json.dumps(app.config['ENVIRONMENT']),mimetype='application/json');
 
 @app.route('/tasks',methods=['GET'])

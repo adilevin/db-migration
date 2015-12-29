@@ -11,6 +11,8 @@ function User(name) {
 }
 
 var http_timeout_milliseconds = 1000;
+var interval_for_marking_tasks_as_done_milliseconds = 6000;
+var interval_for_creating_new_task_milliseconds = 500;
 
 User.prototype.is_healthy = function() {
     return (this.healthy_task_post && this.healthy_task_get && this.healthy_task_put);
@@ -20,7 +22,7 @@ angular.module('tasksApp', [])
     .controller('TasksController', function($scope,$http,$httpParamSerializerJQLike,$interval,$timeout) {
         $scope.is_active = false;
         $scope.max_num_of_tasks_to_display = 20;
-        $scope.assignees = [new User('Bill'), new User('Ronald'), new User('James')];
+        $scope.assignees = [new User('Bill'), new User('Ronald')];
         $scope.percentage_of_uncompleted_tasks = function(assignee) {
             var p = assignee.num_of_uncompleted_tasks*100/$scope.max_num_of_tasks_to_display;
             return Math.min(p,100)
@@ -41,7 +43,7 @@ angular.module('tasksApp', [])
                 function onSuccess(result) { assignee.healthy_task_post = true; },
                 function onError(result) { assignee.healthy_task_post = false; }
             ).finally(
-                function() { $timeout(function(){$scope.create_new_task_for(assignee)},100); }
+                function() { $timeout(function(){$scope.create_new_task_for(assignee)},interval_for_creating_new_task_milliseconds); }
             );
         };
         $scope.refresh_task_count_for = function(assignee) {
@@ -54,7 +56,7 @@ angular.module('tasksApp', [])
                 },
                 function onError(result) { assignee.healthy_task_get = false; }
             ).finally(
-                function() { $timeout(function(){$scope.refresh_task_count_for(assignee)},0);}
+                function() { $timeout(function(){$scope.refresh_task_count_for(assignee)},500);}
             );
         };
         $scope.mark_tasks_done_for = function(assignee) {
@@ -74,7 +76,7 @@ angular.module('tasksApp', [])
                 function () {
                     $timeout(function () {
                         $scope.mark_tasks_done_for(assignee);
-                    }, 2000);
+                    }, interval_for_marking_tasks_as_done_milliseconds);
                 }
             );
         };
