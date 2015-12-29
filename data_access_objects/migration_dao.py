@@ -57,6 +57,8 @@ class MigrationDAO(object):
         return self.select_more_recent_record(task_from_old_db,task_from_new_db)
 
     def resolve_task_collection_conflicts(self,old,new):
+        # Tasks can appear to be undone in one database, but if it is marked as done in the
+        # other database, then we remove it from the list
         merged_task_list = merge_task_collection(old,new)
         merged_task_list = keep_only_undone_tasks(self.old_db,merged_task_list)
         merged_task_list = keep_only_undone_tasks(self.new_db,merged_task_list)
