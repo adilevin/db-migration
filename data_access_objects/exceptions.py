@@ -4,7 +4,7 @@ class TaskIdNotFoundException(Exception):
         self.task_id = task_id
 
     def __str__(self):
-        return repr('Task %s was not found' + self.task_id)
+        return repr('Task %s was not found' % self.task_id)
 
 class DBWriteException(Exception):
     def __init__(self):
