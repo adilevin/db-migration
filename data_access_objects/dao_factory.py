@@ -1,6 +1,9 @@
 
 def create_dao(config):
-    if config['repository'] == 'mongodb':
+    if config['repository'] == 'migrate_from_sqlite_to_mongodb':
+        import sqlite_to_mongo_migration_dao
+        return sqlite_to_mongo_migration_dao.MigrationDAO(config)
+    elif config['repository'] == 'mongodb':
         import mongodb_dao
         return mongodb_dao.Mongo(
             connection_uri=config['mongodb_connection_uri'],

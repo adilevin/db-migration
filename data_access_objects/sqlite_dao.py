@@ -1,6 +1,7 @@
 import sqlite3
 
 from model import task_model
+from exceptions import TaskIdNotFoundException
 
 
 class SQLiteRepo(object):
@@ -29,6 +30,8 @@ class SQLiteRepo(object):
         c = self.conn.cursor()
         c.execute("SELECT * FROM tasks WHERE id=?",(task_id,))
         tuple = c.fetchone()
+        if tuple==None:
+            raise TaskIdNotFoundException(task_id)
         return task_model.Task(tuple[0],tuple[1],tuple[2],tuple[3])
 
     def get_tasks_by_filter(self,filter_dict):

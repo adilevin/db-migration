@@ -1,5 +1,6 @@
 from pymongo import MongoClient, ReturnDocument, ASCENDING
 from pymongo.errors import ServerSelectionTimeoutError
+from exceptions import TaskIdNotFoundException
 
 from model import task_model
 
@@ -30,6 +31,8 @@ class Mongo(object):
 
     def get_task_by_id(self,task_id):
         task_as_dict = self._collection.find_one(filter = {'_id':task_id})
+        if task_as_dict==None:
+            raise TaskIdNotFoundException(task_id)
         return _mongo_dict_to_task(task_as_dict)
 
     def get_tasks_by_filter(self,filter):

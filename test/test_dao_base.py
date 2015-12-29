@@ -1,7 +1,7 @@
 import uuid
 
 from model import task_model
-
+from data_access_objects.exceptions import TaskIdNotFoundException
 
 class TestDAO(object):
 
@@ -47,3 +47,10 @@ class TestDAO(object):
       self.dao.mark_task_as_done(task_id)
       task = self.dao.get_task_by_id(task_id)
       self.assertTrue(task.done)
+
+  def test_exception_raised_in_case_task_not_found(self):
+      task_id = 'INVALID_TASK_ID'
+      try:
+        task = self.dao.get_task_by_id(task_id)
+      except TaskIdNotFoundException as e:
+          self.assertEquals(e.task_id,task_id)
