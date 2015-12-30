@@ -14,8 +14,7 @@ class TestTask(unittest.TestCase):
           self.assertEqual(task.done,done)
 
   def test_task_creation_from_json(self):
-      task = task_model.create_task_from_dict(
-          {
+      task = task_model.Task(**{
             'assignee': 'a',
             'description': 'd',
             'done': True,

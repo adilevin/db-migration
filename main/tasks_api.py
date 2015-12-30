@@ -5,12 +5,15 @@ app = Flask(__name__)
 #from flask.ext.cors import CORS
 #cors = CORS(app)
 
-# Todo:
-# - Refactor to abstract the data access, and the models
-
 import json
 from model import task_model
 from data_access_objects import dao_factory
+
+def obj_to_json(obj):
+    return json.dumps(obj.__dict__)
+
+def array_to_json(arr):
+    return json.dumps([item.__dict__ for item in arr])
 
 dao = None
 
@@ -37,12 +40,12 @@ def get_config():
 @app.route('/tasks',methods=['GET'])
 def get_all_undone_tasks_for_assignee():
     tasks = dao.get_all_undone_tasks_for_assignee(request.args['assignee'])
-    return Response(task_model.array_to_json(tasks),mimetype='application/json');
+    return Response(array_to_json(tasks),mimetype='application/json');
 
 @app.route('/tasks/<task_id>',methods=['GET'])
 def get_task(task_id):
     task = dao.get_task_by_id(task_id)
-    return Response(task_model.obj_to_json(task),mimetype='application/json');
+    return Response(obj_to_json(task),mimetype='application/json');
 
 @app.route('/tasks',methods=['POST'])
 def add_task():
@@ -56,4 +59,4 @@ def add_task():
 @app.route('/tasks/<task_id>',methods=['PUT'])
 def mark_task_as_done(task_id):
     task = dao.mark_task_as_done(task_id)
-    return Response(task_model.obj_to_json(task),mimetype='application/json');
+    return Response(obj_to_json(task),mimetype='application/json');
