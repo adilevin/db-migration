@@ -61,7 +61,7 @@ angular.module('tasksApp', [])
                 return;
             $http({
                 method: 'POST',
-                url: 'http://localhost:5000/tasks',
+                url: '/tasks',
                 timeout: http_timeout_milliseconds,
                 data: $httpParamSerializerJQLike({
                     assignee: assignee.name,
@@ -78,7 +78,7 @@ angular.module('tasksApp', [])
         $scope.refresh_task_count_for = function(assignee) {
             if (!$scope.is_active)
                 return;
-            $http.get('http://localhost:5000/tasks?done=False&assignee=' + encodeURI(assignee.name),{timeout:http_timeout_milliseconds}).then(
+            $http.get('/tasks?done=False&assignee=' + encodeURI(assignee.name),{timeout:http_timeout_milliseconds}).then(
                 function onSuccess(result){
                     assignee.healthy_task_get = true;
                     assignee.num_of_uncompleted_tasks = result.data.length;
@@ -91,11 +91,11 @@ angular.module('tasksApp', [])
         $scope.mark_tasks_done_for = function(assignee) {
             if (!$scope.is_active)
                 return;
-            $http.get('http://localhost:5000/tasks?done=False&assignee=' + encodeURI(assignee.name),{timeout:http_timeout_milliseconds}).then(
+            $http.get('/tasks?done=False&assignee=' + encodeURI(assignee.name),{timeout:http_timeout_milliseconds}).then(
                 function onSuccess(result) {
                     assignee.healthy_task_put = true;
                     result.data.forEach(function (task) {
-                        $http.put('http://localhost:5000/tasks/' + task.id).catch(function() {
+                        $http.put('/tasks/' + task.id).catch(function() {
                             assignee.healthy_task_put = false;
                         });
                     });
