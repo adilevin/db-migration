@@ -10,8 +10,6 @@ We start by running the application on top of [SQLite](https://www.sqlite.org/),
 and we follow Aviran Mordo's 8 steps to migrate to [MongoDB](https://www.mongodb.org/), 
 without downtime.
 
-Notice that some of the scripts and instructions below only work on Windows.
-
 #The 8 steps for a safe migration
 
 For a more complete description of the pattern, please go to 
@@ -34,6 +32,9 @@ For a more complete description of the pattern, please go to
 4. A script *spawn.bat* to spawn a running instance of the application at a given port
 
 #Setup
+
+This was only tested on Windows, but it should work on any platform, except for the spawn.bat file that is 
+specific to Windows and can be be easily rewritten for Linux.
 
 ###Install dependencies
 
@@ -84,6 +85,24 @@ database
 
 - Open an automatic task producer ([localhost:5000/static/taskProducer.html](localhost:5000/static/taskProducer.html))
 
+#The data model
+
+A *task* has 4 attributes:
+
+1. `id` - string (A universally unique ID, given by the application)
+2. `assignee` - string
+3. `description` - string
+4. `done` - boolean
+
+#The REST API
+
+- `GET /tasks?assignee=<assignee_name>`: Get all remaining tasks for a given assignee
+- `GET /tasks/<task_id>`: Get a single task
+- `POST /tasks "assignee=<assignee_name>&description=<task_description>"`: Add a task.
+- `PUT /tasks/<task_id>`: Mark a task as done
+- `GET /config`: Get server configuration info
+
+ 
 #The user console
 
 This is a ToDo application, where users can see their remaining tasks and mark them as done, by clicking checkboxes.
