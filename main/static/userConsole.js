@@ -1,5 +1,5 @@
 angular.module('tasksApp', [])
-    .controller('TasksController', function($scope,$http,$httpParamSerializerJQLike,$interval) {
+    .controller('TasksController', function($scope,$http,$httpParamSerializerJQLike,$timeout) {
         $scope.tasks = [];
         $scope.server_config = {};
         $scope.config_has_changed = false
@@ -17,19 +17,28 @@ angular.module('tasksApp', [])
                     if ($scope.config_has_changed)
                         $scope.server_config = new_server_config;
                 }
+            ).finally(function(){
+                    $timeout(function() {$scope.readServerConfig();},3000);}
             );
         };
         $scope.reloadTaskListFromServer = function() {
-            if ($scope.assignee=='')
+            if ($scope.assignee=='') {
                 $scope.tasks = {}
-            else {
+                $timeout(function () {
+                    $scope.reloadTaskListFromServer();
+                }, 1000);
+            } else {
                 $http.get('/tasks?done=False&assignee=' + encodeURI($scope.assignee)).then(
                     function onSuccess(result) {
                         $scope.tasks = result.data;
                     },
-                    function onError(result) {
-                        alert('http returned error');
-                    });
+                    function onError(result) {}).finally(
+                function () {
+                    $timeout(function () {
+                        $scope.reloadTaskListFromServer();
+                    }, 1000);
+                }
+            );;
             }
         };
         $scope.markTaskAsDone = function(task_id) {
@@ -37,9 +46,7 @@ angular.module('tasksApp', [])
                 function onSuccess(result){
                     $scope.reloadTaskListFromServer();
                 },
-                function onError(result) {
-                    alert('Http failed');
-                });
+                function onError(result) {});
         }
         $scope.new_task_description='';
         $scope.addTask = function() {
@@ -57,9 +64,7 @@ angular.module('tasksApp', [])
                         $scope.new_task_description = '';
                         $scope.reloadTaskListFromServer();
                     },
-                    function onError(result) {
-                        alert('Http failed');
-                    });
+                    function onError(result) {});
             }
         }
         $scope.assignee = '';
@@ -70,11 +75,4 @@ angular.module('tasksApp', [])
             $scope.reloadTaskListFromServer();
         }
         $scope.readServerConfig();
-        $interval(function () {
-            $scope.reloadTaskListFromServer();
-        }, 1000);
-
-        $interval(function() {
-            $scope.readServerConfig();
-        },3000);
     });
