@@ -14,19 +14,12 @@
 	<script src="../static/serverConfigController.js"></script>
 	<script src="../static/userConsole.js"></script>
 </head>
-<body>
 
+<body>
+<br>
 <div class="container-fluid" ng-cloak>
 	<div class="row">
-		<div class="col-sm-4">
-			<div>
-				<br>
-				<h1>
-					Tasks organizer
-				</h1>
-			</div>
-		</div>
-		<div ng-controller="serverConfigController" class="col-sm-8">
+		<div ng-controller="serverConfigController" class="col-sm-12">
 			<div>
 				<pre ng-class="server_config_state()">{{server_config}}</pre>
 			</div>
@@ -83,7 +76,7 @@
 						</h3>
 					</div>
 					<div class="panel-body">
-						<p ng-repeat="task in tasks">
+						<p ng-repeat="task in tasks | orderBy:'description'">
 							<input ng-disabled="task.done" ng-checked="task.done" type="checkbox" ng-click="markTaskAsDone(task.id)">
 							{{task.description}}
 						</p>
