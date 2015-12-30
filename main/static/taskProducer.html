@@ -6,8 +6,13 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Automatic tasks producer</title>
 	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+	<link href="../static/serverConfig.css" rel="stylesheet">
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
-	<script src="taskProducer.js"></script>
+	<script>
+		app = angular.module('tasksApp',[]);
+	</script>
+	<script src="../static/serverConfigController.js"></script>
+	<script src="../static/taskProducer.js"></script>
 </head>
 <body>
 
@@ -36,5 +41,16 @@
 		</div>
 	</div>
 </div>
+<br>
+<div class="container-fluid" ng-controller="serverConfigController" ng-cloak>
+	<div class="row">
+		<div class="col-sm-12">
+			<div>
+				<pre ng-class="server_config_state()">{{server_config}}</pre>
+			</div>
+		</div>
+	</div>
+</div>
+
 </body>
 </html>

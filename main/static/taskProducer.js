@@ -6,10 +6,6 @@ function User(name) {
     this.healthy_task_put = true;
 }
 
-var http_timeout_milliseconds = 1000;
-var interval_for_marking_tasks_as_done_milliseconds = 6000;
-var interval_for_creating_new_task_milliseconds = 500;
-
 User.prototype.is_healthy = function() {
     return (this.healthy_task_post && this.healthy_task_get && this.healthy_task_put);
 };
@@ -41,14 +37,17 @@ task_pool = [
     'Clean garage',
     'Prune trees and shrubs'];
 
-next_task_to_generate = 0
+next_task_to_generate = 0;
 function generate_new_task_description() {
-    next_task_to_generate = next_task_to_generate + 1
+    next_task_to_generate = next_task_to_generate + 1;
     return task_pool[next_task_to_generate%task_pool.length];
 }
 
-angular.module('tasksApp', [])
+angular.module('tasksApp')
     .controller('TasksController', function($scope,$http,$httpParamSerializerJQLike,$interval,$timeout) {
+        var http_timeout_milliseconds = 1000;
+        var interval_for_marking_tasks_as_done_milliseconds = 6000;
+        var interval_for_creating_new_task_milliseconds = 500;
         $scope.is_active = false;
         $scope.max_num_of_tasks_to_display = 20;
         $scope.assignees = [new User('Bill'), new User('Jane')];
@@ -120,5 +119,5 @@ angular.module('tasksApp', [])
 
         $scope.deactivate = function() {
             $scope.is_active = false;
-        }
+        };
     });

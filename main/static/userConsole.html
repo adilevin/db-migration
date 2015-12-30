@@ -7,12 +7,16 @@
 	<title>Tasks organizer</title>
 	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
-	<link href="../static/userConsole.css" rel="stylesheet">
+	<script>
+		app = angular.module('tasksApp',[]);
+	</script>
+	<link href="../static/serverConfig.css" rel="stylesheet">
+	<script src="../static/serverConfigController.js"></script>
 	<script src="../static/userConsole.js"></script>
 </head>
 <body>
 
-<div class="container-fluid" ng-controller="TasksController" ng-cloak>
+<div class="container-fluid" ng-cloak>
 	<div class="row">
 		<div class="col-sm-4">
 			<div>
@@ -22,66 +26,68 @@
 				</h1>
 			</div>
 		</div>
-		<div class="col-sm-8">
+		<div ng-controller="serverConfigController" class="col-sm-8">
 			<div>
 				<pre ng-class="server_config_state()">{{server_config}}</pre>
 			</div>
 		</div>
 	</div>
 	<br>
-	<div class="row">
-		<div class="col-sm-12">
-			<form class="form-horizontal" role="form">
-				<div class="form-group">
-					<label for="assigneeName" class="col-sm-2 control-label">
-						Assginee
-					</label>
-					<div class="col-sm-4">
-						<input type="text" class="form-control" id="assigneeName" ng-model="new_assignee"/>
+	<div ng-controller="TasksController">
+		<div class="row">
+			<div class="col-sm-12">
+				<form class="form-horizontal" role="form">
+					<div class="form-group">
+						<label for="assigneeName" class="col-sm-2 control-label">
+							Assginee
+						</label>
+						<div class="col-sm-4">
+							<input type="text" class="form-control" id="assigneeName" ng-model="new_assignee"/>
+						</div>
+						<div class="col-sm-2">
+							<button type="submit" class="btn btn-primary" ng-click="setNewAssignee()">
+								<span class="glyphicon glyphicon-refresh"></span>
+							</button>
+						</div>
 					</div>
-					<div class="col-sm-2">
-						<button type="submit" class="btn btn-primary" ng-click="setNewAssignee()">
-							<span class="glyphicon glyphicon-refresh"></span>
-						</button>
-					</div>
-				</div>
-			</form>
+				</form>
+			</div>
 		</div>
-	</div>
 
-	<div class="row">
-		<div class="col-sm-12">
-			<form class="form-horizontal" role="form">
-				<div class="form-group">
-					<label for="taskDecription" class="col-sm-2 control-label">
-						Task description
-					</label>
-					<div class="col-sm-4">
-						<input type="text" class="form-control" id="taskDecription" ng-model="new_task_description"/>
+		<div class="row">
+			<div class="col-sm-12">
+				<form class="form-horizontal" role="form">
+					<div class="form-group">
+						<label for="taskDecription" class="col-sm-2 control-label">
+							Task description
+						</label>
+						<div class="col-sm-4">
+							<input type="text" class="form-control" id="taskDecription" ng-model="new_task_description"/>
+						</div>
+						<div class="col-sm-2">
+							<button type="submit" class="btn btn-primary" ng-click="addTask()">
+								<span class="glyphicon glyphicon-plus"></span>
+							</button>
+						</div>
 					</div>
-					<div class="col-sm-2">
-						<button type="submit" class="btn btn-primary" ng-click="addTask()">
-							<span class="glyphicon glyphicon-plus"></span>
-						</button>
-					</div>
-				</div>
-			</form>
+				</form>
+			</div>
 		</div>
-	</div>
 
-	<div class="row">
-		<div class="col-sm-12">
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<h3 class="panel-title">
-						Tasks for <span>{{assignee}}</span>
-					</h3>
-				</div>
-				<div class="panel-body">
-					<p ng-repeat="task in tasks">
-						<input ng-disabled="task.done" ng-checked="task.done" type="checkbox" ng-click="markTaskAsDone(task.id)">
-						{{task.description}}
-					</p>
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">
+							Tasks for <span>{{assignee}}</span>
+						</h3>
+					</div>
+					<div class="panel-body">
+						<p ng-repeat="task in tasks">
+							<input ng-disabled="task.done" ng-checked="task.done" type="checkbox" ng-click="markTaskAsDone(task.id)">
+							{{task.description}}
+						</p>
+					</div>
 				</div>
 			</div>
 		</div>
