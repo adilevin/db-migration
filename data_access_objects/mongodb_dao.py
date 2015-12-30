@@ -1,6 +1,6 @@
 from pymongo import MongoClient, ReturnDocument, ASCENDING
 from pymongo.errors import ServerSelectionTimeoutError
-from exceptions import TaskIdNotFoundException
+from data_access_objects.exceptions import TaskIdNotFoundException
 from model import task_model
 
 def _mongo_dict_to_task(mongo_dict):
@@ -43,7 +43,7 @@ class MongoDBDAO(object):
 
     # Returns the inserted task_id
     def add_task(self,task):
-        result = self._collection.insert_one({'_id':task.id,'assignee':task.assignee,'description':task.description,'done':task.done});
+        result = self._collection.insert_one({'_id':task.id,'assignee':task.assignee,'description':task.description,'done':bool(task.done)});
         return result.inserted_id
 
     def mark_task_as_done(self,task_id):

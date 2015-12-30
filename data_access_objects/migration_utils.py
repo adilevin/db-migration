@@ -1,5 +1,5 @@
 from model import task_model
-from exceptions import TaskIdNotFoundException
+from data_access_objects.exceptions import TaskIdNotFoundException
 
 def unite_lists_of_undone_tasks(task_list_0,task_list_1):
     merged_tasks = {task.id : task for task in task_list_0}
@@ -25,3 +25,12 @@ def eagerly_migrate_data_from_sqlite_to_mongodb(config):
             new_db.add_task(t) # t doesn't exist in new DB, so add it
         elif t.done:
             new_db.mark_task_as_done(t.id) # t is marked as done in the old DB, so mark it as done in the new DB
+
+if __name__ == '__main__':
+    print 'Migrating data from SQLite to MongoDB...'
+    eagerly_migrate_data_from_sqlite_to_mongodb({
+        'mongodb_connection_uri' : 'mongodb://localhost:27017/',
+        'mongodb_database_name' : 'prod',
+        'sqlite_file_path' : 'c:/sqlite/sqlite_prod.db',
+    })
+    print 'Done.'

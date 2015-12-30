@@ -1,7 +1,7 @@
 import sqlite3
 
 from model import task_model
-from exceptions import TaskIdNotFoundException
+from data_access_objects.exceptions import TaskIdNotFoundException
 
 class SQLiteDAO(object):
     def __init__(self,config):
