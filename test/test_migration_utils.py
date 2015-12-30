@@ -47,6 +47,8 @@ class TestEagerMigrationFromSQLiteToMongoDB(unittest.TestCase):
   def tearDown(self):
       self.old_db.delete_all_tasks()
       self.new_db.delete_all_tasks()
+      del(self.old_db)
+      del(self.new_db)
 
   def insert_tasks_to_old_db(self):
       self.old_db.add_task(Task('Undone task that exists only in old DB', 'a0', 'd0', False))

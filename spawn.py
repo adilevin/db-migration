@@ -8,5 +8,5 @@ try:
     os.makedirs(os.path.join(folder_name,'sqlite_files'))
 except:
     pass
-for subfolder in ['main','model','data_access_objects','test','web-clients']:
+for subfolder in ['main','model','data_access_objects','test']:
     shutil.copytree(subfolder,os.path.join(folder_name,subfolder))
