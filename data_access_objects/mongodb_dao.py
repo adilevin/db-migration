@@ -7,7 +7,7 @@ def _mongo_dict_to_task(mongo_dict):
     task_as_dict = dict(mongo_dict)
     task_as_dict['id'] = task_as_dict['_id']
     task_as_dict.pop('_id')
-    return task_model.create_task_from_dict(task_as_dict)
+    return task_model.Task(**task_as_dict)
 
 class MongoDBDAO(object):
     def __init__(self,config):
