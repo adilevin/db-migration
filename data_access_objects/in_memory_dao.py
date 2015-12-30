@@ -18,9 +18,10 @@ class InMemoryRepo(object):
             raise TaskIdNotFoundException(task_id)
 
     def get_all_undone_tasks_for_assignee(self,assignee):
-        assignee_predicate = lambda task : (task.assignee==assignee)
-        done_predicate = lambda task : (task.done==False)
-        return filter(lambda task : assignee_predicate(task) and done_predicate(task),self._tasks.values())
+        return filter(
+            lambda task : (task.assignee==assignee) and (task.done==False),
+            self._tasks.values()
+        )
 
     # Returns the inserted task_id
     def add_task(self,task):
