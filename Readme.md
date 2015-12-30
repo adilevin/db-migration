@@ -10,6 +10,8 @@ We start by running the application on top of [SQLite](https://www.sqlite.org/),
 and we follow Aviran Mordo's 8 steps to migrate to [MongoDB](https://www.mongodb.org/), 
 without downtime.
 
+Notice that some of the scripts and instructions below only work on Windows.
+
 #The 8 steps for a safe migration
 
 For a more complete description of the pattern, please go to 
@@ -29,7 +31,7 @@ For a more complete description of the pattern, please go to
 1. Flask application, in folders *main, data_access_objects, model*, and unit tests in *test*.
 2. HTML + Javascript + CSS for the user console and automatic task producer, in folder *main/static*
 3. An initial NGINX configuration file in folder *nginx*
-4. The *spawn.bat* to spawn a running instance of the application at a given port (on Windows)
+4. A script *spawn.bat* to spawn a running instance of the application at a given port
 
 #Setup
 
@@ -104,3 +106,61 @@ In addition, we have a web page that automatically produces tasks for two users,
  This page also displays the same server configuration panel as the user console.
 
 ![](images/automatic_producer.png)
+
+#Demonstration guidelines
+
+For a successful demonstration, follow this step-by-step procedure:
+
+- Go through the basics
+  1. Run the application using SQLite
+  1. First, introduce the application by showing the user console
+  1. Invite the audience to open a user console on their notebooks and start adding tasks and marking tasks as done
+  1. Show the data in an SQLite browser to prove that the data is written to SQLite
+  1. Now stop the application and rerun it after configuring to use MongoDB
+  1. Ask the audience to add tasks, and show the data in the mongo console
+  1. Open the automatic task producer and show how this adds data in mongo.  
+- Show some code
+  1. The data access layer
+  1. Show the data access layer
+- Demonstrate reconfiguration of NGINX to switch application versions
+  1. Start a new instance of the application, that uses SQLite
+  1. Reconfigure NGINX to start using the new application version without downtime.
+  1. Emphasize that data was lost in this process.
+- Prepare for live demo of safe migration
+  1. Stop the application
+  1. Clear both SQLite and MongoDB production databases
+  1. Configure the application to use SQLite
+  1. Run the application on port 8000
+  1. Ask the audience to enter new tasks
+  1. Start the automatic task producer
+  1. Ask the audience to continue refreshing and adding tasks or marking them as done during the demo, to see that their data is not lost.
+- Discuss steps 1 and 2
+- Step 3
+  1. Spawn an instance of the application running step 3 of the migration. Do this by setting this value in main.py: 
+    > appConfig['repository'] = 'migrate_from_sqlite_to_mongodb'
+    
+  1. Show the code for writing, and show that we first write to the old database.
+  1. Show how new data is being written to MongoDB, using the mongo command-line
+      > use prod
+      
+      > db.tasks.find({'assignee':<some name>})
+  1. Show that old data does not exist in MongoDB yet
+- Step 4
+  1. Switch to step 4.
+  1. Show the code for reading and discuss conflict resolution.
+- Step 5
+  1. Switch to step 5.
+  1. Show the code for writing
+- Step 6
+  1. Switch to step 6.
+  1. Show the code for writing
+  1. Show that SQLite database is not growing anymore
+- Step 7 - migration of old data from SQLite to MongoDB
+  1. Run migration_utils.py. This invokes the function eagerly_migrate_data_from_sqlite_to_mongodb()
+  1. During this operation, use mongo commandline to show that the old data is being added to MongoDB.
+- Step 8
+  1. Spawn an instance of the app that uses on MongoDB
+ 
+
+  
+      
