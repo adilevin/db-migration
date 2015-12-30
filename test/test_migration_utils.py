@@ -65,6 +65,7 @@ class TestEagerMigrationFromSQLiteToMongoDB(unittest.TestCase):
       self.assertTrue(self.new_db.get_task_by_id('Done task that exists only in old DB').done)
       self.assertTrue(self.new_db.get_task_by_id('Task that is undone in the old DB by done in the new DB').done)
       self.assertTrue(self.new_db.get_task_by_id('Task that is done in the old DB by undone in the new DB').done)
+      self.assertTrue(type(self.new_db.get_task_by_id('Undone task that exists only in old DB').done)==bool)
 
   def test_eager_migration_from_sqlite_to_mongodb(self):
       self.insert_tasks_to_old_db()
