@@ -10,6 +10,7 @@ appConfig = {
     'mongodb_connection_uri' : 'mongodb://localhost:27017/',
     'mongodb_database_name' : 'prod',
     'sqlite_file_path' : 'c:/sqlite/sqlite_prod.db',
+    'migration_step' : 0,
     'port' : port
 }
 
