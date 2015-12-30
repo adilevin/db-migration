@@ -18,6 +18,7 @@ class TestDAOSqlite(unittest.TestCase,TestDAO):
       count = 0
       for t in self.dao.iterate_all_tasks():
           self.assertEqual(t.id,task_ids[count])
+          self.assertEqual(bool,type(t.done))
           count = count + 1
 
   def test_iterate_all_tasks(self):

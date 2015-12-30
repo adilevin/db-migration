@@ -20,6 +20,7 @@ class TestDAO(object):
         self.assertEqual(task.assignee,assignee)
         self.assertEqual(task.description,description)
         self.assertEqual(task.done,i%2==0)
+        self.assertEqual(bool,type(task.done))
 
   def test_has_task_with_id(self):
     self.assertFalse(self.dao.has_task_with_id('INVALID_ID_FOR_TEST'))
@@ -32,6 +33,7 @@ class TestDAO(object):
     for i in range(2):
         self.add_task('a2','d2')
     self.assertEqual(len(self.dao.get_all_undone_tasks_for_assignee('a1')),3)
+    self.assertEqual(bool,type(self.dao.get_all_undone_tasks_for_assignee('a1')[0].done))
     self.assertEqual(len(self.dao.get_all_undone_tasks_for_assignee('a2')),2)
     task_id = self.add_task('a1','d1')
     self.assertEqual(len(self.dao.get_all_undone_tasks_for_assignee('a1')),4)

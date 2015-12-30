@@ -38,13 +38,13 @@ class SQLiteDAO(object):
         tuple = c.fetchone()
         if tuple==None:
             raise TaskIdNotFoundException(task_id)
-        return task_model.Task(tuple[0],tuple[1],tuple[2],tuple[3])
+        return task_model.Task(tuple[0],tuple[1],tuple[2],bool(tuple[3]))
 
     def get_all_undone_tasks_for_assignee(self,assignee):
         c = self.conn.cursor()
         c.execute('SELECT * FROM tasks WHERE assignee="%s" AND done=0' % assignee)
         tuples = c.fetchall()
-        return [task_model.Task(tuple[0],tuple[1],tuple[2],tuple[3]) for tuple in tuples]
+        return [task_model.Task(tuple[0],tuple[1],tuple[2],bool(tuple[3])) for tuple in tuples]
 
     # Returns the inserted task_id
     def add_task(self,task):
@@ -65,6 +65,6 @@ class SQLiteDAO(object):
         while True:
             tuple = c.fetchone()
             if tuple!=None:
-                yield task_model.Task(tuple[0],tuple[1],tuple[2],tuple[3])
+                yield task_model.Task(tuple[0],tuple[1],tuple[2],bool(tuple[3]))
             else:
                 return
