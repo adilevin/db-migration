@@ -1,3 +1,5 @@
+var http_timeout_milliseconds = 1000;
+
 angular.module('tasksApp', [])
     .controller('TasksController', function($scope,$http,$httpParamSerializerJQLike,$timeout) {
         $scope.tasks = [];
@@ -10,7 +12,7 @@ angular.module('tasksApp', [])
                 return '';
         };
         $scope.readServerConfig = function() {
-            $http.get('/config').then(
+            $http.get('/config',{timeout:http_timeout_milliseconds}).then(
                 function onSuccess(result) {
                     new_server_config = JSON.stringify(result.data, undefined, 2);
                     $scope.config_has_changed = (new_server_config != $scope.server_config);
@@ -28,21 +30,15 @@ angular.module('tasksApp', [])
                     $scope.reloadTaskListFromServer();
                 }, 1000);
             } else {
-                $http.get('/tasks?done=False&assignee=' + encodeURI($scope.assignee)).then(
+                $http.get('/tasks?done=False&assignee=' + encodeURI($scope.assignee),{timeout:http_timeout_milliseconds}).then(
                     function onSuccess(result) {
                         $scope.tasks = result.data;
                     },
-                    function onError(result) {}).finally(
-                function () {
-                    $timeout(function () {
-                        $scope.reloadTaskListFromServer();
-                    }, 1000);
-                }
-            );;
+                    function onError(result) {});
             }
         };
         $scope.markTaskAsDone = function(task_id) {
-            $http.put('/tasks/' + task_id).then(
+            $http.put('/tasks/' + task_id,{timeout:http_timeout_milliseconds}).then(
                 function onSuccess(result){
                     $scope.reloadTaskListFromServer();
                 },
@@ -58,6 +54,7 @@ angular.module('tasksApp', [])
                         assignee: $scope.assignee,
                         description: $scope.new_task_description
                     }),
+                    timeout:http_timeout_milliseconds,
                     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
                 }).then(
                     function onSuccess(result){
