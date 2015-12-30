@@ -24,6 +24,64 @@ For a more complete description of the pattern, please go to
 7. Migrate data from the old database to the new one
 8. Delete the old data access object
 
+#What's included in this repository
+
+1. Flask application, in folders *main, data_access_objects, model*, and unit tests in *test*.
+2. HTML + Javascript + CSS for the user console and automatic task producer, in folder *main/static*
+3. An initial NGINX configuration file in folder *nginx*
+4. The *spawn.bat* to spawn a running instance of the application at a given port (on Windows)
+
+#Setup
+
+###Install dependencies
+
+- [Install Python 2.7](https://www.python.org/downloads/)
+
+- [Install MongoDB](https://docs.mongodb.org/manual/)
+
+- [Install greenlet package](https://pypi.python.org/pypi/greenlet), a prerequisite for gevent
+>`pip install greenlet`
+
+- [Install gevent](http://www.gevent.org/) as the WSGI server
+
+- [Install NGINX](http://nginx.org/en/download.html) which we use as a reverse proxy, to 
+switch application versions without downtime 
+
+###Setup databases
+
+- Start a MongoDB instance by running
+>`mongod`
+
+- Prepare an SQLite production environment by creating a folder where the application will place the sqlite production
+database
+> `mkdir c:\sqlite`
+
+###Setup Python project
+
+- Clone the repository
+
+- Run tests from the repository root folder
+> `python -m unittest discover -s test`
+
+###Setup reverse proxy
+
+- Copy <repository_root>/nginx/nginx.conf to the conf subfolder in the nginx installation folder. It routes traffic from port 5000 to port 8000.
+ 
+- Run NGINX
+> start nginx
+
+###Run application on port 8000
+ 
+- Open a command-line in the db-migration folder
+
+ > `set PYTHONPATH=.` (on Windows)
+
+ > `python main/main.py 8000`
+
+- Open a user console ([localhost:5000](http://localhost:5000)) 
+
+- Open an automatic task producer ([localhost:5000/static/taskProducer.html](localhost:5000/static/taskProducer.html))
+
 #The user console
 
 This is a ToDo application, where users can see their remaining tasks and mark them as done, by clicking checkboxes.
@@ -46,51 +104,3 @@ In addition, we have a web page that automatically produces tasks for two users,
  This page also displays the same server configuration panel as the user console.
 
 ![](images/automatic_producer.png)
-
-
-#Setup
-
-###Install dependencies
-
-- [Install Python 2.7](https://www.python.org/downloads/)
-
-- [Install MongoDB](https://docs.mongodb.org/manual/)
-
-- Start a MongoDB instance by running
->`mongod`
-
-- [Installl greenlet package](https://pypi.python.org/pypi/greenlet), a prerequisite for gevent
->`pip install greenlet`
-
-- [Install gevent](http://www.gevent.org/) as the WSGI server
-
-- [Install latest version of NGINX](http://nginx.org/en/download.html) which we use as a reverse proxy, to 
-switch between different application versions without downtime 
-
-###Setup Python project
-
-- Clone the repository
-
-- Run tests
-> `python -m unittest discover -s test`
-
-###Setup reverse proxy
-
-- Copy nginx/nginx.conf to the conf subfolder in the nginx installation folder. It routes traffic from port 5000 to port 8000.
- 
-- Run NGINX
-> start nginx
-
-###Run application on port 8000
- 
-- Open a command-line in the db-migration folder
-
- > `set PYTHONPATH=.` (on Windows)
-
- > `python main/main.py 8000`
-
-###Start web clients
-
-- For the user console, open [localhost:5000](http://localhost:5000) 
-
-- For the automatic task producer, open [localhost:5000/static/taskProducer.html](localhost:5000/static/taskProducer.html)
