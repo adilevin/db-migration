@@ -120,8 +120,8 @@ For a successful demonstration, follow this step-by-step procedure:
   1. Ask the audience to add tasks, and show the data in the mongo console
   1. Open the automatic task producer and show how this adds data in mongo.  
 - Show some code
-  1. The data access layer
   1. Show the data access layer
+  1. Show the API REST handlers
 - Demonstrate reconfiguration of NGINX to switch application versions
   1. Start a new instance of the application, that uses SQLite
   1. Reconfigure NGINX to start using the new application version without downtime.
@@ -136,14 +136,16 @@ For a successful demonstration, follow this step-by-step procedure:
   1. Ask the audience to continue refreshing and adding tasks or marking them as done during the demo, to see that their data is not lost.
 - Discuss steps 1 and 2
 - Step 3
-  1. Spawn an instance of the application running step 3 of the migration. Do this by setting this value in main.py: 
-    > appConfig['repository'] = 'migrate_from_sqlite_to_mongodb'
+  1. Spawn an instance of the application running step 3 of the migration. Do this by setting these values in main.py:
+    > `'migration_step' : 3,`
+    
+    > `appConfig['repository'] = 'migrate_from_sqlite_to_mongodb'`
     
   1. Show the code for writing, and show that we first write to the old database.
   1. Show how new data is being written to MongoDB, using the mongo command-line
-      > use prod
+      > `use prod`
       
-      > db.tasks.find({'assignee':<some name>})
+      > `db.tasks.find({'assignee':<some name>})`
   1. Show that old data does not exist in MongoDB yet
 - Step 4
   1. Switch to step 4.
