@@ -8,6 +8,9 @@ class InMemoryRepo(object):
     def delete_all_tasks(self):
         self._tasks = {}
 
+    def has_task_with_id(self,task_id):
+        return task_id in self._tasks.keys()
+
     def get_task_by_id(self,task_id):
         try:
             return self._tasks[task_id]

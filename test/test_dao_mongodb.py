@@ -14,4 +14,3 @@ class TestDAOMongoDB(unittest.TestCase,TestDAO):
   def tearDown(self):
       self.dao.delete_all_tasks()
       del(self.dao)
-

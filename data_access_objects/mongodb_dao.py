@@ -3,7 +3,6 @@ from pymongo.errors import ServerSelectionTimeoutError
 from exceptions import TaskIdNotFoundException
 from model import task_model
 
-
 def _mongo_dict_to_task(mongo_dict):
     task_as_dict = dict(mongo_dict)
     task_as_dict['id'] = task_as_dict['_id']
@@ -33,6 +32,9 @@ class MongoDBDAO(object):
         if task_as_dict==None:
             raise TaskIdNotFoundException(task_id)
         return _mongo_dict_to_task(task_as_dict)
+
+    def has_task_with_id(self,task_id):
+        return self._collection.find(filter = {'_id':task_id}).count()>0
 
     def get_all_undone_tasks_for_assignee(self,assignee):
         cursor = self._collection.find({'assignee':assignee,'done':False})

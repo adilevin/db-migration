@@ -25,6 +25,13 @@ class SQLiteDAO(object):
         c.execute("DELETE FROM tasks")
         self.conn.commit()
 
+    def has_task_with_id(self,task_id):
+        try:
+            task = self.get_task_by_id(task_id)
+            return True
+        except TaskIdNotFoundException:
+            return False
+
     def get_task_by_id(self,task_id):
         c = self.conn.cursor()
         c.execute('SELECT * FROM tasks WHERE id=?',(task_id,))
@@ -52,8 +59,12 @@ class SQLiteDAO(object):
         self.conn.commit()
         return self.get_task_by_id(task_id)
 
-if __name__ == '__main__':
-    s = SQLiteDAO('c:/temp/s.db')
-    s.create_table_if_doesnt_exist()
-    s.add_task(task_model.Task('xsdf98ksljhfsf','adi','get up',True))
-    print s.get_task_by_id('xsdf98ksljhfsf')
+    def iterate_all_tasks(self):
+        c = self.conn.cursor()
+        c.execute('SELECT * FROM tasks')
+        while True:
+            tuple = c.fetchone()
+            if tuple!=None:
+                yield task_model.Task(tuple[0],tuple[1],tuple[2],tuple[3])
+            else:
+                return

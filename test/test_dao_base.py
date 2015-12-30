@@ -6,20 +6,25 @@ from data_access_objects import migration_utils
 
 class TestDAO(object):
 
-  def add_task(self,assignee,description):
-    task_id = self.dao.add_task(task_model.Task(str(uuid.uuid4()),assignee,description,False))
+  def add_task(self,assignee,description,done=False):
+    task_id = self.dao.add_task(task_model.Task(str(uuid.uuid4()),assignee,description,done))
     self.assertGreater(len(task_id),20)
     return task_id
 
-  def test_add_tasks(self):
+  def test_add_and_get_individual_tasks(self):
     for i in range(3):
         assignee = 'a' + str(i)
         description = 'd' + str(i)
-        task_id = self.add_task(assignee,description)
+        task_id = self.add_task(assignee,description,i%2==0)
         task = self.dao.get_task_by_id(task_id)
         self.assertEqual(task.assignee,assignee)
         self.assertEqual(task.description,description)
-        self.assertFalse(task.done)
+        self.assertEqual(task.done,i%2==0)
+
+  def test_has_task_with_id(self):
+    self.assertFalse(self.dao.has_task_with_id('INVALID_ID_FOR_TEST'))
+    task_id = self.add_task('a','d')
+    self.assertTrue(self.dao.has_task_with_id(task_id))
 
   def test_get_multiple_tasks(self):
     for i in range(3):
@@ -46,6 +51,7 @@ class TestDAO(object):
       task_id = 'INVALID_TASK_ID'
       try:
         task = self.dao.get_task_by_id(task_id)
+        self.fail()
       except TaskIdNotFoundException as e:
           self.assertEquals(e.task_id,task_id)
 
@@ -53,6 +59,7 @@ class TestDAO(object):
       task_id = 'INVALID_TASK_ID'
       try:
         self.dao.mark_task_as_done(task_id)
+        self.fail()
       except TaskIdNotFoundException as e:
           self.assertEquals(e.task_id,task_id)
 
