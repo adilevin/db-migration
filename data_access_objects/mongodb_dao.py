@@ -16,7 +16,7 @@ class MongoDBDAO(object):
         try:
             self.client.server_info()
         except ServerSelectionTimeoutError:
-            raise Exception('Failed to connect to MongoDB at %s\nCheck that the connection URI is good and that mongod is running' % connection_uri)
+            raise Exception('Failed to connect to MongoDB at %s\nCheck that the connection URI is good and that mongod is running' % config['mongodb_connection_uri'])
         self.db = self.client[self.database_name]
         self._collection = self.db.tasks
         self._collection.create_index([('assignee',ASCENDING),('done',ASCENDING)]);
