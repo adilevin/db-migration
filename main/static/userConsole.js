@@ -3,13 +3,15 @@ var http_timeout_milliseconds = 1000;
 angular.module('tasksApp')
     .controller('TasksController', function($scope,$http,$httpParamSerializerJQLike,$timeout) {
         $scope.tasks = [];
-        $scope.reloadTaskListFromServer = function() {
-            if ($scope.assignee=='') {
-                $scope.tasks = {}
-                $timeout(function () {
-                    $scope.reloadTaskListFromServer();
-                }, 1000);
-            } else {
+        $scope.refreshAssignee = function() {
+            if ($scope.new_assignee != $scope.assignee) {
+                $scope.tasks = []
+                $scope.assignee = $scope.new_assignee;
+            };
+        };
+        $scope.refresh = function() {
+            $scope.refreshAssignee();
+            if ($scope.assignee!='') {
                 $http.get('/tasks?done=False&assignee=' + encodeURI($scope.assignee),{timeout:http_timeout_milliseconds}).then(
                     function onSuccess(result) {
                         $scope.tasks = result.data;
@@ -20,12 +22,13 @@ angular.module('tasksApp')
         $scope.markTaskAsDone = function(task_id) {
             $http.put('/tasks/' + task_id,{timeout:http_timeout_milliseconds}).then(
                 function onSuccess(result){
-                    $scope.reloadTaskListFromServer();
+                    $scope.refresh();
                 },
                 function onError(result) {});
-        }
+        };
         $scope.new_task_description='';
         $scope.addTask = function() {
+            $scope.refreshAssignee();
             if ($scope.new_task_description!='') {
                 $http({
                     method: 'POST',
@@ -39,16 +42,12 @@ angular.module('tasksApp')
                 }).then(
                     function onSuccess(result){
                         $scope.new_task_description = '';
-                        $scope.reloadTaskListFromServer();
+                        $scope.refresh();
                     },
                     function onError(result) {});
-            }
+            } else
+                $scope.refresh();
         }
         $scope.assignee = '';
-        $scope.new_assignee = $scope.assignee;
-        $scope.setNewAssignee = function() {
-            $scope.tasks = []
-            $scope.assignee = $scope.new_assignee;
-            $scope.reloadTaskListFromServer();
-        }
+        $scope.new_assignee = '';
     });
