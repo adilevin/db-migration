@@ -6,6 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Tasks organizer</title>
 	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="shortcut icon" href="../static/favicon.ico" type="image/x-icon" />
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
 	<script>
 		app = angular.module('tasksApp',[]);
@@ -38,7 +39,7 @@
 							<input type="text" class="form-control" id="assigneeName" ng-model="new_assignee"/>
 						</div>
 						<div class="col-sm-2">
-							<button type="submit" class="btn btn-primary" ng-click="setNewAssignee()">
+							<button type="submit" class="btn btn-primary" ng-click="refresh()" ng-blur="refresh()">
 								<span class="glyphicon glyphicon-refresh"></span>
 							</button>
 						</div>
