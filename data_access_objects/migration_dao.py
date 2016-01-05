@@ -28,7 +28,7 @@ class MigrationDAO(object):
     def read_from_both_databases(self,task_id):
         task_from_old_db = None
         task_from_new_db = None
-        if self.migration_step in [2,3,4]:
+        if self.migration_step in [2,3,4,5,6,7]:
             try:
                 task_from_old_db = self.old_db.get_task_by_id(task_id)
             except TaskIdNotFoundException:
